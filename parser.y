@@ -13,8 +13,6 @@
 
 %token  NUMBER 
 %token  ID
-%token  OP
-%token  DOP
 %token  INT
 %token  CHAR
 %token  BOOL
@@ -25,30 +23,51 @@
 %token  WHILE
 %token  INPUT
 %token  PRINT
-%token  TRUE
-%token  FALSE
 %token	IO
 %token  END
-%token  RELOP
+%token  ROP
+%token  RDOP
+%token  SOP
+%token  SDOP
+%token  MOP
+%token  MDOP
+%token  AND
+%token  OR
+%token  NOT
+%token  TRUE
+%token  FALSE
 %%
 
 Goal: Expr END '\n' 
 	| Goal Expr END'\n'
   ;
 
-Expr: 	Term OP '('Expr')'
-	| Term DOP '('Expr')'
-  | Term OP Expr  
-  | Term RELOP Expr  
-  | Term DOP Expr
-  | OP Expr
-  | OP '('Expr')'  
+Expr: 	AndTerm OR '('Expr')'
+  | AndTerm
+  ;
+AndTerm: UnTerm AND AndTerm
+  | UnTerm
+  ;
+UnTerm: NOT UnTerm
+  | RelTerm
+  ;
+RelTerm: SumTerm ROP SumTerm
+  | SumTerm RDOP SumTerm
+  | SumTerm
+  ;
+SumTerm: MulTerm SOP SumTerm
+  | MulTerm SDOP MulTerm
+  | MulTerm
+  ;
+MulTerm: Term MOP MulTerm
+  | Term MDOP MulTerm
   | Term
-	
   ;
 
 Term:	NUMBER 
 	| ID
+  | ID'['Expr']'
+  | ID'['Expr']''['Expr']'
   | TRUE
   | FALSE
 	;
