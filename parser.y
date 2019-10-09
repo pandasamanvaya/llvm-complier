@@ -24,47 +24,44 @@
 %token  INPUT
 %token  PRINT
 %token	IO
-%token  END
 %token  ROP
 %token  RDOP
 %token  SOP
-%token  SDOP
 %token  MOP
-%token  MDOP
+%token  AOP
 %token  AND
 %token  OR
 %token  NOT
 %token  TRUE
 %token  FALSE
+%token  EQUAL
 %%
 
-Goal: Expr END '\n' 
-	| Goal Expr END'\n'
+Goal: Expr ';' '\n' 
+	| Goal Expr ';' '\n'
   ;
 
-Expr: RelTerm ROP Expr
-  | RelTerm RDOP Expr
-  | RelTerm
-  ;
-RelTerm: SumTerm ROP RelTerm
-  | SumTerm RDOP RelTerm
-  | SumTerm
-  ;
-SumTerm: MulTerm SOP SumTerm
-  | MulTerm SDOP MulTerm
-  | MulTerm
-  ;
-MulTerm: OrTerm MOP MulTerm
-  | OrTerm MDOP MulTerm
+Expr: Var AOP Expr
+  | Var EQUAL Expr
   | OrTerm
   ;
-OrTerm: AndTerm OR OrTerm
+OrTerm: OrTerm OR AndTerm
   | AndTerm
   ;
-AndTerm: UnTerm AND AndTerm
+AndTerm: AndTerm AND UnTerm
   | UnTerm
   ;
 UnTerm: NOT UnTerm
+  | RelTerm
+  ;
+RelTerm: SumTerm ROP SumTerm
+  | SumTerm RDOP SumTerm
+  | SumTerm
+  ;
+SumTerm: SumTerm SOP MulTerm
+  | MulTerm
+  ;
+MulTerm: MulTerm MOP Term
   | Term
   ;
 Term: Var
