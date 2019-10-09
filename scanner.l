@@ -29,16 +29,16 @@ input				{cout << yytext << " "; return INPUT;}
 and					{cout << yytext << " "; return AND;}
 or					{cout << yytext << " "; return OR;}
 not					{cout << yytext << " "; return NOT;}
-[=><!][=]			{cout << yytext << " "; return RDOP;}
-[=><]				{cout << yytext << " "; return ROP;}
-[-+][=]				{cout << yytext << " "; return SDOP;}
+[><][=]				{cout << yytext << " "; return RDOP;}
+[><]				{cout << yytext << " "; return ROP;}
+[=]					{cout << yytext << " "; return EQUAL;}
+[-+*/!=][=]			{cout << yytext << " "; return AOP;}
 [-+]				{cout << yytext << " "; return SOP;}
-[*/][=]				{cout << yytext << " "; return MDOP;}
 [*/%]				{cout << yytext << " "; return MOP;}
 [<>][<>]			{cout << yytext << " "; return IO;}
 ["'a-zA-Z][a-zA-Z0-9_'"]* 	{cout << yytext << " "; return ID;}
 [0-9][0-9]*			{cout << yytext << " "; return NUMBER;}
 \n					{++lineno; return '\n'; }
-;					{cout << yytext; return END;}
+;					{cout << yytext <<endl; return ';';}
 .					{cout << "Unrecognised char";}
 %%
