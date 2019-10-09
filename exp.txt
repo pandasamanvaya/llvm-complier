@@ -4,5 +4,7 @@ a[10][10][30] = a[20][102][34] + 2;
 a = b + (c+d);
 not a;
 a = not b + c; 
+a or b;
+a and b;
 c = not (a or b);
 a = True;

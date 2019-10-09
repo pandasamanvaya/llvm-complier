@@ -42,49 +42,56 @@ Goal: Expr END '\n'
 	| Goal Expr END'\n'
   ;
 
-Expr: 	AndTerm OR '('Expr')'
-  | AndTerm
-  ;
-AndTerm: UnTerm AND AndTerm
-  | UnTerm
-  ;
-UnTerm: NOT UnTerm
+Expr: RelTerm ROP Expr
+  | RelTerm RDOP Expr
   | RelTerm
   ;
-RelTerm: SumTerm ROP SumTerm
-  | SumTerm RDOP SumTerm
+RelTerm: SumTerm ROP RelTerm
+  | SumTerm RDOP RelTerm
   | SumTerm
   ;
 SumTerm: MulTerm SOP SumTerm
   | MulTerm SDOP MulTerm
   | MulTerm
   ;
-MulTerm: Term MOP MulTerm
-  | Term MDOP MulTerm
+MulTerm: OrTerm MOP MulTerm
+  | OrTerm MDOP MulTerm
+  | OrTerm
+  ;
+OrTerm: AndTerm OR OrTerm
+  | AndTerm
+  ;
+AndTerm: UnTerm AND AndTerm
+  | UnTerm
+  ;
+UnTerm: NOT UnTerm
   | Term
   ;
-
-Term:	NUMBER 
-	| ID
-  | ID'['Expr']'
-  | ID'['Expr']''['Expr']'
-  | TRUE
+Term: Var
+  | NonVar
+  ;
+Var: ID
+  | Var'['Expr']'
+  ;
+NonVar: '('Expr')'
+  | Constant
+  ;
+Constant:	NUMBER 
+	| TRUE
   | FALSE
 	;
-
-
 %%
 
 void yyerror(char *s)
 {
-        fprintf(stderr, "error: %s\n", s);
+  fprintf(stderr, "error: %s\n", s);
 }
 
 
 main(int argc, char **argv)
 {
-        yyparse();
-        printf("Parsing Over\n");
+  yyparse();
+  printf("Parsing Over\n");
 }
 
 
