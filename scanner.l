@@ -1,16 +1,36 @@
 %{
+#include <iostream>
 #include "parser.tab.h"
+using namespace std;
+extern "C" int yylex();
 int lineno = 0;
 %}
-
-%% 
-[ \t] 			{ /* eat white spaces */  }
-[a-zA-Z][a-zA-Z]* 	{return ID;}
-[0-9][0-9]*		{return NUMBER;}
-[i][n][t]		{return INT;}
-[c][h][a][r]	{return CHAR;}
-[b][o][o][l]	{return BOOL;}
-[v][o][i][d]	{return VOID;}
-[+-*=></%!][=]		{return OP;}
-[T][r][u][e]		{return TRUE;}
-[F][a][l][s][e]		{return FALSE;}
+ 
+%%
+[ \t] 				{ /* eat white spaces */  }
+[{]					{cout << yytext << " "; return '{';}
+[}]					{cout << yytext << " "; return '}';}
+[(]					{cout << yytext << " "; return '(';}
+[)]					{cout << yytext << " "; return ')';}
+int					{cout << yytext << " "; return INT;}
+char				{cout << yytext << " "; return CHAR;}
+bool				{cout << yytext << " "; return BOOL;}
+void				{cout << yytext << " "; return VOID;}
+True				{cout << yytext << " "; return TRUE;}
+False				{cout << yytext << " "; return FALSE;}
+if 					{cout << yytext << " "; return IF;}
+for 				{cout << yytext << " "; return FOR;}
+while				{cout << yytext << " "; return WHILE;}
+else				{cout << yytext << " "; return ELSE;}
+print				{cout << yytext << " "; return PRINT;}
+input				{cout << yytext << " "; return INPUT;}
+[ao][nr][d]*		{cout << yytext << " "; return RELOP;}
+[-+*=></][=]		{cout << yytext << " "; return DOP;}
+[-+*=></%!]			{cout << yytext << " "; return OP;}
+[<>][<>]			{cout << yytext << " "; return IO;}
+["']*[a-zA-Z][a-zA-Z0-9_\[\]'"]* 	{cout << yytext << " "; return ID;}
+[0-9][0-9]*			{cout << yytext << " "; return NUMBER;}
+\n					{++lineno; return '\n'; }
+;					{cout << yytext; return END;}
+.					{cout << "Unrecognised char";}
+%%
