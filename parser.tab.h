@@ -58,18 +58,17 @@ extern int yydebug;
     INPUT = 268,
     PRINT = 269,
     IO = 270,
-    END = 271,
-    ROP = 272,
-    RDOP = 273,
-    SOP = 274,
-    SDOP = 275,
-    MOP = 276,
-    MDOP = 277,
-    AND = 278,
-    OR = 279,
-    NOT = 280,
-    TRUE = 281,
-    FALSE = 282
+    ROP = 271,
+    RDOP = 272,
+    SOP = 273,
+    MOP = 274,
+    AOP = 275,
+    AND = 276,
+    OR = 277,
+    NOT = 278,
+    TRUE = 279,
+    FALSE = 280,
+    EQUAL = 281
   };
 #endif
 
