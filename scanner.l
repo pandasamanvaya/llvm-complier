@@ -32,10 +32,10 @@ or					{cout << yytext << " "; return OR;}
 not					{cout << yytext << " "; return NOT;}
 break				{cout << yytext << " "; return BREAK;}
 return 				{cout << yytext << " "; return RETURN;}
-[><][=]				{cout << yytext << " "; return RDOP;}
+[><=][=]			{cout << yytext << " "; return RDOP;}
 [><]				{cout << yytext << " "; return ROP;}
 [=]					{cout << yytext << " "; return EQUAL;}
-[-+*/!=][=]			{cout << yytext << " "; return AOP;}
+[-+*/!][=]			{cout << yytext << " "; return AOP;}
 [-+]				{cout << yytext << " "; return SOP;}
 [*/%]				{cout << yytext << " "; return MOP;}
 [>][>]				{cout << yytext << " "; return IN;}
