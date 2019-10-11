@@ -68,7 +68,8 @@ extern int yydebug;
     NOT = 278,
     TRUE = 279,
     FALSE = 280,
-    EQUAL = 281
+    EQUAL = 281,
+    BREAK = 282
   };
 #endif
 

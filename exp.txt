@@ -10,3 +10,8 @@ c = not (a or b);
 a > b;
 a  += (b < c);
 a = True;
+a = (a > b ?True:False)? c : d;
+if (a>b and b < c)
+{c = b+b;
+a = 2;
+}
