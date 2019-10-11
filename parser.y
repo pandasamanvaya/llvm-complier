@@ -23,7 +23,6 @@
 %token  WHILE
 %token  INPUT
 %token  PRINT
-%token	IO
 %token  ROP
 %token  RDOP
 %token  SOP
@@ -36,37 +35,73 @@
 %token  FALSE
 %token  EQUAL
 %token  BREAK
-%token  END
+%token  RETURN
+%token  IN
+%token  OUT
 %%
 
-Goal: StatList END
-	| Goal StatList END
+Goal: DecList;
+
+DecList: DecList Dec
+  | Dec
   ;
-StatList: StatList Stat
-  | Stat
+Dec: FuncDec
+  | VarDec
   ;
-Stat: ExprStat
+//Variable
+VarDec: Type VarList ';';
+VarList: VarList',' Var
+  | Var
+  ;
+//Function
+FuncDec: Type ID '(' ParamList ')' '{'StatList'}'
+  | Type ID '(' ParamList ')' ';'
+  ;
+Type: INT | CHAR | BOOL | VOID;
+ParamList: ParamList ';' Param 
+  | Param
+  ;
+Param: Type VarList
+  | ;
+StatList: Statement 
+	| StatList Statement
+  ;
+Statement: ExprStat
   | CondStat
   | LoopStat
+  | IOStat
+  | RetStat
+  ;
+//I/O 
+IOStat: InpStat ';'
+  | OutStat ';' 
+  ;
+InpStat: INPUT IN InpList  
+  ;
+InpList: Var IN InpList
+  | Var
+  ;
+OutStat: PRINT OUT OutList
+  ;
+OutList: OutList OUT Term
+  | Term
+  ;
+//Return
+RetStat: RETURN ';'
+  | RETURN Expr ';'
   ;
 //Loops
-LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{''\n' StatList '}' '\n'
-  |  FOR '(' Expr ';' Expr ';' Expr ')' '\n' '{''\n' StatList '}' '\n'
-  | WHILE '('Expr')'  '{' '\n'StatList '}' '\n'
-  | WHILE '('Expr')' '\n' '{' '\n'StatList '}' '\n'
+LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{'StatList'}'
+  | WHILE '('Expr')'  '{'StatList '}'
   ;
 //Conditions 
-CondStat: IF '('Expr')' '{''\n' StatList'}' '\n'
-  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n'
-  | IF '('Expr')'  '{''\n' StatList'}' '\n' ELSE  '{''\n' StatList'}' '\n'  
-  | IF '('Expr')'  '{''\n' StatList'}' '\n' ELSE '\n' '{''\n' StatList'}' '\n'  
-  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n' ELSE '\n' '{''\n' StatList'}' '\n'  
-  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n' ELSE  '{''\n' StatList'}' '\n'  
+CondStat: IF '('Expr')' '{' StatList'}'
+  | IF '('Expr')'  '{'StatList'}' ELSE '{'StatList'}'   
   ;
 //All Expressions
-ExprStat: Expr ';' '\n' 
+ExprStat: Expr ';'  
   | Expr
-  | BREAK ';' '\n'
+  | BREAK ';' 
   ;
 Expr: Var AOP Expr
   | Var EQUAL Expr
