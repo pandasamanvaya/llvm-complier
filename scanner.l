@@ -40,5 +40,7 @@ not					{cout << yytext << " "; return NOT;}
 [0-9][0-9]*			{cout << yytext << " "; return NUMBER;}
 \n					{++lineno; return '\n'; }
 ;					{cout << yytext <<endl; return ';';}
+[?]					{cout << "yytext" << " "; return '?';}
+[:]					{cout << "yytext" << " "; return ':';}
 .					{cout << "Unrecognised char";}
 %%
