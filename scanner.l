@@ -30,19 +30,21 @@ and					{cout << yytext << " "; return AND;}
 or					{cout << yytext << " "; return OR;}
 not					{cout << yytext << " "; return NOT;}
 break				{cout << yytext << " "; return BREAK;}
-end					{cout << yytext << " "; return END;}
+return 				{cout << yytext << " "; return RETURN;}
 [><][=]				{cout << yytext << " "; return RDOP;}
 [><]				{cout << yytext << " "; return ROP;}
 [=]					{cout << yytext << " "; return EQUAL;}
 [-+*/!=][=]			{cout << yytext << " "; return AOP;}
 [-+]				{cout << yytext << " "; return SOP;}
 [*/%]				{cout << yytext << " "; return MOP;}
-[<>][<>]			{cout << yytext << " "; return IO;}
+[>][>]				{cout << yytext << " "; return IN;}
+[<][<]				{cout << yytext << " "; return OUT;}
 ["'a-zA-Z][a-zA-Z0-9_'"]* 	{cout << yytext << " "; return ID;}
-[0-9][0-9]*			{cout << yytext << " "; return NUMBER;}
-\n					{++lineno; return '\n'; }
+[0-9]+				{cout << yytext << " "; return NUMBER;}
+\n					{++lineno;}
 ;					{cout << yytext <<endl; return ';';}
 [?]					{cout << yytext << " "; return '?';}
 [:]					{cout << yytext << " "; return ':';}
+[,]					{cout << yytext << " "; return ',';}
 .					{cout << "Unrecognised char";}
 %%
