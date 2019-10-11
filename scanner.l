@@ -14,6 +14,7 @@ int lineno = 0;
 [)]					{cout << yytext << " "; return ')';}
 [\]]				{cout << yytext << " "; return ']';}
 [\[]				{cout << yytext << " "; return '[';}
+["'][^"']+["'] 		{cout << yytext << " "; return STRING;}
 int					{cout << yytext << " "; return INT;}
 char				{cout << yytext << " "; return CHAR;}
 bool				{cout << yytext << " "; return BOOL;}
@@ -39,7 +40,7 @@ return 				{cout << yytext << " "; return RETURN;}
 [*/%]				{cout << yytext << " "; return MOP;}
 [>][>]				{cout << yytext << " "; return IN;}
 [<][<]				{cout << yytext << " "; return OUT;}
-["'a-zA-Z][a-zA-Z0-9_'"]* 	{cout << yytext << " "; return ID;}
+[a-zA-Z][a-zA-Z0-9_]* 	{cout << yytext << " "; return ID;}
 [0-9]+				{cout << yytext << " "; return NUMBER;}
 \n					{++lineno;}
 ;					{cout << yytext <<endl; return ';';}
