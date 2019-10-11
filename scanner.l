@@ -29,6 +29,7 @@ input				{cout << yytext << " "; return INPUT;}
 and					{cout << yytext << " "; return AND;}
 or					{cout << yytext << " "; return OR;}
 not					{cout << yytext << " "; return NOT;}
+break				{cout << yytext << " "; return BREAK;}
 [><][=]				{cout << yytext << " "; return RDOP;}
 [><]				{cout << yytext << " "; return ROP;}
 [=]					{cout << yytext << " "; return EQUAL;}
@@ -40,7 +41,7 @@ not					{cout << yytext << " "; return NOT;}
 [0-9][0-9]*			{cout << yytext << " "; return NUMBER;}
 \n					{++lineno; return '\n'; }
 ;					{cout << yytext <<endl; return ';';}
-[?]					{cout << "yytext" << " "; return '?';}
-[:]					{cout << "yytext" << " "; return ':';}
+[?]					{cout << yytext << " "; return '?';}
+[:]					{cout << yytext << " "; return ':';}
 .					{cout << "Unrecognised char";}
 %%
