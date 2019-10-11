@@ -43,6 +43,9 @@ Goal: Expr ';' '\n'
 
 Expr: Var AOP Expr
   | Var EQUAL Expr
+  | TerExpr
+  ;
+TerExpr: TerExpr '?' OrTerm ':' OrTerm
   | OrTerm
   ;
 OrTerm: OrTerm OR AndTerm
