@@ -38,6 +38,7 @@
 %token  RETURN
 %token  IN
 %token  OUT
+%token  STRING
 %%
 
 Goal: DecList;
@@ -86,6 +87,8 @@ OutStat: PRINT OUT OutList
   ;
 OutList: OutList OUT Term
   | Term
+  | OutList OUT STRING
+  | STRING
   ;
 //Return
 RetStat: RETURN ';'
