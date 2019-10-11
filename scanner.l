@@ -30,6 +30,7 @@ and					{cout << yytext << " "; return AND;}
 or					{cout << yytext << " "; return OR;}
 not					{cout << yytext << " "; return NOT;}
 break				{cout << yytext << " "; return BREAK;}
+end					{cout << yytext << " "; return END;}
 [><][=]				{cout << yytext << " "; return RDOP;}
 [><]				{cout << yytext << " "; return ROP;}
 [=]					{cout << yytext << " "; return EQUAL;}
