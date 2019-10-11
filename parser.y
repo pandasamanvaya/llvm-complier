@@ -54,7 +54,8 @@ VarList: VarList',' Var
   | Var
   ;
 //Function
-FuncDec: Type ID '(' ParamList ')' '{'StatList'}'
+FuncDec: Type ID '(' ParamList ')' '{'VarDec StatList'}'
+  | Type ID '(' ParamList ')' '{'StatList'}'
   | Type ID '(' ParamList ')' ';'
   ;
 Type: INT | CHAR | BOOL | VOID;
@@ -91,12 +92,18 @@ RetStat: RETURN ';'
   | RETURN Expr ';'
   ;
 //Loops
-LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{'StatList'}'
-  | WHILE '('Expr')'  '{'StatList '}'
+LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDec StatList'}'
+  | FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList'}'
+  | WHILE '('Expr')'  '{' VarDec StatList '}'
+  | WHILE '('Expr')'  '{' StatList '}'
   ;
 //Conditions 
-CondStat: IF '('Expr')' '{' StatList'}'
-  | IF '('Expr')'  '{'StatList'}' ELSE '{'StatList'}'   
+CondStat: IF '('Expr')' '{' VarDec StatList'}'
+  | IF '('Expr')' '{' StatList'}'
+  | IF '('Expr')'  '{' VarDec StatList'}' ELSE '{' VarDec StatList'}'   
+  | IF '('Expr')'  '{'VarDec StatList'}' ELSE '{'StatList'}'   
+  | IF '('Expr')'  '{'StatList'}' ELSE '{' VarDec StatList'}'
+  | IF '('Expr')'  '{'StatList'}' ELSE '{'StatList'}'
   ;
 //All Expressions
 ExprStat: Expr ';'  
