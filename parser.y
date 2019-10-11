@@ -36,22 +36,35 @@
 %token  FALSE
 %token  EQUAL
 %token  BREAK
+%token  END
 %%
 
-Goal: StatList '\n' 
-	| Goal StatList '\n'
+Goal: StatList END
+	| Goal StatList END
   ;
 StatList: StatList Stat
   | Stat
   ;
 Stat: ExprStat
   | CondStat
+  | LoopStat
   ;
-CondStat: IF '('Expr')' '\n' '{'StatList'}'
-  | IF '('Expr')' '\n' '{'StatList'}' ELSE '{'StatList'}'
+//Loops
+LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{''\n' StatList '}' '\n'
+  |  FOR '(' Expr ';' Expr ';' Expr ')' '\n' '{''\n' StatList '}' '\n'
+  | WHILE '('Expr')'  '{' '\n'StatList '}' '\n'
+  | WHILE '('Expr')' '\n' '{' '\n'StatList '}' '\n'
+  ;
+//Conditions 
+CondStat: IF '('Expr')' '{''\n' StatList'}' '\n'
+  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n'
+  | IF '('Expr')'  '{''\n' StatList'}' '\n' ELSE  '{''\n' StatList'}' '\n'  
+  | IF '('Expr')'  '{''\n' StatList'}' '\n' ELSE '\n' '{''\n' StatList'}' '\n'  
+  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n' ELSE '\n' '{''\n' StatList'}' '\n'  
+  | IF '('Expr')' '\n' '{''\n' StatList'}' '\n' ELSE  '{''\n' StatList'}' '\n'  
   ;
 //All Expressions
-ExprStat: Expr ';' '\n'
+ExprStat: Expr ';' '\n' 
   | Expr
   | BREAK ';' '\n'
   ;
