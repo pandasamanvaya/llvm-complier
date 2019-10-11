@@ -65,6 +65,7 @@ ParamList: ParamList ';' Param
   ;
 Param: Type VarList
   | ;
+//Statement
 StatList: Statement 
 	| StatList Statement
   ;
@@ -85,8 +86,8 @@ InpList: Var IN InpList
   ;
 OutStat: PRINT OUT OutList
   ;
-OutList: OutList OUT Term
-  | Term
+OutList: OutList OUT Expr
+  | Expr
   | OutList OUT STRING
   | STRING
   ;
@@ -95,10 +96,13 @@ RetStat: RETURN ';'
   | RETURN Expr ';'
   ;
 //Loops
-LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDec StatList'}'
-  | FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList'}'
+LoopStat: FOR '(' ExprList ';' ExprList ';' ExprList ')' '{' VarDec StatList'}'
+  | FOR '(' ExprList ';' ExprList ';' ExprList ')' '{' StatList'}'
   | WHILE '('Expr')'  '{' VarDec StatList '}'
   | WHILE '('Expr')'  '{' StatList '}'
+  ;
+ExprList: ExprList ',' Expr
+  | Expr
   ;
 //Conditions 
 CondStat: IF '('Expr')' '{' VarDec StatList'}'
@@ -147,6 +151,14 @@ Var: ID
   ;
 NonVar: '('Expr')'
   | Constant
+  | FunCall
+  ;
+FunCall: ID '('Argument')' ';'
+  | ID '('Argument')'
+  ;
+Argument: ArgList |;
+ArgList: ArgList ',' Expr
+  | Expr
   ;
 Constant:	NUMBER 
 	| TRUE
