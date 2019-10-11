@@ -35,12 +35,26 @@
 %token  TRUE
 %token  FALSE
 %token  EQUAL
+%token  BREAK
 %%
 
-Goal: Expr ';' '\n' 
-	| Goal Expr ';' '\n'
+Goal: StatList '\n' 
+	| Goal StatList '\n'
   ;
-
+StatList: StatList Stat
+  | Stat
+  ;
+Stat: ExprStat
+  | CondStat
+  ;
+CondStat: IF '('Expr')' '\n' '{'StatList'}'
+  | IF '('Expr')' '\n' '{'StatList'}' ELSE '{'StatList'}'
+  ;
+//All Expressions
+ExprStat: Expr ';' '\n'
+  | Expr
+  | BREAK ';' '\n'
+  ;
 Expr: Var AOP Expr
   | Var EQUAL Expr
   | TerExpr
