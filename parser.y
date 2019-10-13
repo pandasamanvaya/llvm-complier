@@ -3,14 +3,13 @@
   #include <iostream>
   using namespace std;
 
-  // stuff from flex that bison needs to know about:
   extern "C" int yylex();
   extern int yyparse();
   extern FILE *yyin;
   void yyerror(char *s);
 %}
 
-
+%expect 2
 %token  NUMBER 
 %token  ID
 %token  INT
@@ -54,16 +53,17 @@ VarDec: Type VarList ';';
 VarList: VarList',' Var
   | Var
   ;
+
 //Function
 FuncDec: Type ID '(' ParamList ')' '{'VarDec StatList'}'
   | Type ID '(' ParamList ')' '{'StatList'}'
   | Type ID '(' ParamList ')' ';'
   ;
 Type: INT | CHAR | BOOL | VOID;
-ParamList: ParamList ';' Param 
+ParamList: ParamList ',' Param 
   | Param
   ;
-Param: Type VarList
+Param: Type Var
   | ;
 //Statement
 StatList: Statement 
@@ -147,20 +147,23 @@ Term: Var
   | NonVar
   ;
 Var: ID
-  | Var'['Expr']'
+  | ID Dim
+  | ID '[' ']'Dim
+  ;
+Dim: Dim '['Expr']'
+  |'['Expr']'
   ;
 NonVar: '('Expr')'
   | Constant
   | FunCall
   ;
-FunCall: ID '('Argument')' ';'
-  | ID '('Argument')'
+FunCall: ID '(' ArgList ')'';'
+  | ID '(' ArgList ')'
   ;
-Argument: ArgList |;
 ArgList: ArgList ',' Expr
   | Expr
-  ;
-Constant:	NUMBER 
+  |;
+ Constant:	NUMBER 
 	| TRUE
   | FALSE
 	;
@@ -170,7 +173,6 @@ void yyerror(char *s)
 {
   fprintf(stderr, "error: %s\n", s);
 }
-
 
 main(int argc, char **argv)
 {
