@@ -147,6 +147,7 @@ Term: Var
   | NonVar
   ;
 Var: ID
+  | ID '[' ']'
   | ID Dim
   | ID '[' ']'Dim
   ;
