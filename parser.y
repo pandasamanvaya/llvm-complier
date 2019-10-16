@@ -129,6 +129,7 @@ AndTerm: AndTerm AND UnTerm
   | UnTerm
   ;
 UnTerm: NOT UnTerm
+  | SOP UnTerm
   | RelTerm
   ;
 RelTerm: SumTerm ROP SumTerm
