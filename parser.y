@@ -9,7 +9,6 @@
   void yyerror(char *s);
 %}
 
-%expect 2
 %token  NUMBER 
 %token  ID
 %token  INT
@@ -114,7 +113,6 @@ CondStat: IF '('Expr')' '{' VarDec StatList'}'
   ;
 //All Expressions
 ExprStat: Expr ';'  
-  | Expr
   | BREAK ';' 
   ;
 Expr: Var AOP Expr
@@ -158,8 +156,7 @@ NonVar: '('Expr')'
   | Constant
   | FunCall
   ;
-FunCall: ID '(' ArgList ')'';'
-  | ID '(' ArgList ')'
+FunCall: ID '(' ArgList ')'
   ;
 ArgList: ArgList ',' Expr
   | Expr
