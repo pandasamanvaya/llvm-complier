@@ -17,6 +17,7 @@ a = True;
 a = (a > b ?True:False)? c : d;
 for(i=0; i < n; i+=1){
 a +=1;
+a = -1 + (-10);
 call_func(n);
 if(call_func((a+b)/2, 12, a[30])){
 	return 10;
