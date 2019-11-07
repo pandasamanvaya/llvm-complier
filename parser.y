@@ -1,56 +1,35 @@
 %{
   #include <stdio.h>
-  #include <iostream>
-  using namespace std;
-
-  extern "C" int yylex();
+  #include "ast.h"
+  extern int yylex();
   extern int yyparse();
   extern FILE *yyin;
   void yyerror(char *s);
 %}
 
-%token  NUMBER 
-%token  ID
-%token  INT
-%token  CHAR
-%token  BOOL
-%token  VOID
-%token  IF
-%token  ELSE
-%token  FOR
-%token  WHILE
-%token  INPUT
-%token  PRINT
-%token  ROP
-%token  RDOP
-%token  SOP
-%token  MOP
-%token  AOP
-%token  AND
-%token  OR
-%token  NOT
-%token  TRUE
-%token  FALSE
-%token  EQUAL
-%token  BREAK
-%token  RETURN
-%token  IN
-%token  OUT
-%token  STRING
+%union{
+  char *text;
+  struct ASTNode *node;
+  int number;
+}
+
+%token  NUMBER ID INT CHAR BOOL VOID IF ELSE FOR WHILE INPUT PRINT ROP STRING
+%token  RDOP SOP MOP AOP AND OR NOT TRUE FALSE EQUAL BREAK RETURN IN OUT
+%type <node> Expr Var OrTerm AndTerm MulTerm SumTerm TerExpr Constant 
+%type <node> Term RelTerm UnTerm
 %%
 
 Goal: DecList;
-
 DecList: DecList Dec
-  | Dec
+  | Dec                                   
   ;
-Dec: FuncDec
-  | VarDec
+Dec: FuncDec                              
+  | VarDec                                
   ;
 //Variable
 VarDec: Type VarList ';';
 VarList: VarList',' Var
-  | Var
+  | Var                                    
   ;
 
 //Function
@@ -60,35 +39,35 @@ FuncDec: Type ID '(' ParamList ')' '{'VarDec StatList'}'
   ;
 Type: INT | CHAR | BOOL | VOID;
 ParamList: ParamList ',' Param 
-  | Param
+  | Param                                   
   ;
 Param: Type Var
   | ;
 //Statement
-StatList: Statement 
+StatList: Statement                         
 	| StatList Statement
   ;
-Statement: ExprStat
-  | CondStat
-  | LoopStat
-  | IOStat
-  | RetStat
+Statement: ExprStat                         
+  | CondStat                                
+  | LoopStat                                
+  | IOStat                                  
+  | RetStat                                 
   ;
 //I/O 
-IOStat: InpStat ';'
-  | OutStat ';' 
+IOStat: InpStat ';'                         
+  | OutStat ';'                             
   ;
 InpStat: INPUT IN InpList  
   ;
 InpList: Var IN InpList
-  | Var
+  | Var                                     
   ;
 OutStat: PRINT OUT OutList
   ;
 OutList: OutList OUT Expr
-  | Expr
+  | Expr                                    
   | OutList OUT STRING
-  | STRING
+  | STRING                                  
   ;
 //Return
 RetStat: RETURN ';'
@@ -97,53 +76,53 @@ RetStat: RETURN ';'
 //Loops
 LoopStat: FOR '(' ExprList ';' ExprList ';' ExprList ')' '{' VarDec StatList'}'
   | FOR '(' ExprList ';' ExprList ';' ExprList ')' '{' StatList'}'
-  | WHILE '('Expr')'  '{' VarDec StatList '}'
-  | WHILE '('Expr')'  '{' StatList '}'
+  | WHILE '('Expr')' '{' VarDec StatList '}'
+  | WHILE '('Expr')' '{' StatList '}'
   ;
 ExprList: ExprList ',' Expr
-  | Expr
+  | Expr                         {printPostFix($1);}   
   ;
 //Conditions 
 CondStat: IF '('Expr')' '{' VarDec StatList'}'
   | IF '('Expr')' '{' StatList'}'
-  | IF '('Expr')'  '{' VarDec StatList'}' ELSE '{' VarDec StatList'}'   
-  | IF '('Expr')'  '{'VarDec StatList'}' ELSE '{'StatList'}'   
-  | IF '('Expr')'  '{'StatList'}' ELSE '{' VarDec StatList'}'
-  | IF '('Expr')'  '{'StatList'}' ELSE '{'StatList'}'
+  | IF '('Expr')' '{' VarDec StatList'}' ELSE '{' VarDec StatList'}'   
+  | IF '('Expr')' '{'VarDec StatList'}' ELSE '{'StatList'}'   
+  | IF '('Expr')' '{'StatList'}' ELSE '{' VarDec StatList'}'
+  | IF '('Expr')' '{'StatList'}' ELSE '{'StatList'}'
   ;
 //All Expressions
-ExprStat: Expr ';'  
+ExprStat: Expr ';'                  {printPostFix($1);}  
   | BREAK ';' 
   ;
-Expr: Var AOP Expr
-  | Var EQUAL Expr
-  | TerExpr
+Expr: Var AOP Expr                  {$$ = getASTNodeBinaryOp($1, $3, DASSIGN, yylval.text);}
+  | Var EQUAL Expr                  {$$ = getASTNodeBinaryOp($1, $3, ASSIGN, yylval.text); printf("%s\n", yylval.text);}
+  | TerExpr                         
   ;
-TerExpr: TerExpr '?' OrTerm ':' OrTerm
-  | OrTerm
+TerExpr: TerExpr '?' OrTerm ':' OrTerm  {$$ = getASTNodeTernaryOp($1, $3, $5);}
+  | OrTerm                                
   ;
-OrTerm: OrTerm OR AndTerm
-  | AndTerm
+OrTerm: OrTerm OR AndTerm           {$$ = getASTNodeBinaryOp($1, $3, OROP, yylval.text);}
+  | AndTerm                         
   ;
-AndTerm: AndTerm AND UnTerm
-  | UnTerm
+AndTerm: AndTerm AND UnTerm         {$$ = getASTNodeBinaryOp($1, $3, ANDOP, yylval.text);}
+  | UnTerm                          
   ;
-UnTerm: NOT UnTerm
-  | SOP UnTerm
-  | RelTerm
+UnTerm: NOT UnTerm                  {$$ = getASTNodeUnaryOp($2, NOTOP, yylval.text);}
+  | SOP UnTerm                      {$$ = getASTNodeUnaryOp($2, SUMOP, yylval.text);}
+  | RelTerm                         
   ;
-RelTerm: SumTerm ROP SumTerm
-  | SumTerm RDOP SumTerm
-  | SumTerm
+RelTerm: SumTerm ROP SumTerm        {$$ = getASTNodeBinaryOp($1, $3, RELOP, yylval.text);}
+  | SumTerm RDOP SumTerm            {$$ = getASTNodeBinaryOp($1, $3, RELDOP, yylval.text);}
+  | SumTerm                         
   ;
-SumTerm: SumTerm SOP MulTerm
-  | MulTerm
+SumTerm: SumTerm SOP MulTerm        {$$ = getASTNodeBinaryOp($1, $3, SUMOP, yylval.text);}
+  | MulTerm                         
   ;
-MulTerm: MulTerm MOP Term
-  | Term
+MulTerm: MulTerm MOP Term           {$$ = getASTNodeBinaryOp($1, $3, MULOP, yylval.text);}
+  | Term                                          
   ;
-Term: Var
-  | NonVar
+Term: Var                           
+  | NonVar                          
   ;
 Var: ID
   | ID '[' ']'
@@ -151,20 +130,20 @@ Var: ID
   | ID '[' ']'Dim
   ;
 Dim: Dim '['Expr']'
-  |'['Expr']'
+  |'['Expr']' 
   ;
-NonVar: '('Expr')'
-  | Constant
-  | FunCall
+NonVar: '('Expr')'                   
+  | Constant                         
+  | FunCall                          
   ;
 FunCall: ID '(' ArgList ')'
   ;
 ArgList: ArgList ',' Expr
-  | Expr
+  | Expr                              
   |;
- Constant:	NUMBER 
-	| TRUE
-  | FALSE
+ Constant:	NUMBER               {$$ = getASTNodeIntLiteral(yylval.number);}
+	| TRUE                         {$$ = getASTNodeBoolLiteral(yylval.text);}
+  | FALSE                        {$$ = getASTNodeBoolLiteral(yylval.text);}
 	;
 %%
 
