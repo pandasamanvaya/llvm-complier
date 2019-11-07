@@ -363,10 +363,10 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[99] =
     {   0,
         0,    0,   43,   41,    1,   36,   41,   41,   31,    4,
-        5,   31,   30,   40,   35,   39,   37,   27,   28,   27,
+        5,   31,   30,   40,   35,   39,   37,   27,   29,   27,
        38,   34,   34,   34,    7,    6,   34,   34,   34,   34,
        34,   34,   34,   34,   34,   34,   34,   34,    2,    3,
-       29,    0,   35,   33,   26,   32,   34,   34,   34,   34,
+       28,    0,   35,   33,   26,   32,   34,   34,   34,   34,
        34,   34,   34,   34,   34,   15,   34,   34,   22,   34,
        34,   34,   34,    8,   34,   34,   21,   34,   34,   34,
        34,   16,   34,    9,   23,   34,   34,   34,   34,   34,
@@ -504,13 +504,11 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
-#include <iostream>
 #include "parser.tab.h"
-using namespace std;
-extern "C" int yylex();
+extern int yylex();
 int lineno = 0;
-#line 513 "lex.yy.c"
-#line 514 "lex.yy.c"
+#line 511 "lex.yy.c"
+#line 512 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -727,9 +725,9 @@ YY_DECL
 		}
 
 	{
-#line 9 "scanner.l"
+#line 7 "scanner.l"
 
-#line 733 "lex.yy.c"
+#line 731 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -788,217 +786,217 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 10 "scanner.l"
-{ /* eat white spaces */cout << yytext;  }
+#line 8 "scanner.l"
+{printf("%s", yytext); /* eat white spaces */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 11 "scanner.l"
-{cout << yytext; return '{';}
+#line 9 "scanner.l"
+{printf("%s", yytext); return '{';}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 12 "scanner.l"
-{cout << yytext; return '}';}
+#line 10 "scanner.l"
+{printf("%s", yytext); return '}';}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 13 "scanner.l"
-{cout << yytext; return '(';}
+#line 11 "scanner.l"
+{printf("%s", yytext); return '(';}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 14 "scanner.l"
-{cout << yytext; return ')';}
+#line 12 "scanner.l"
+{printf("%s", yytext); return ')';}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 15 "scanner.l"
-{cout << yytext; return ']';}
+#line 13 "scanner.l"
+{printf("%s", yytext); return ']';}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 16 "scanner.l"
-{cout << yytext; return '[';}
+#line 14 "scanner.l"
+{printf("%s", yytext); return '[';}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 17 "scanner.l"
-{cout << yytext; return STRING;}
+#line 15 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return STRING;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 18 "scanner.l"
-{cout << yytext; return INT;}
+#line 16 "scanner.l"
+{yylval.text = "int"; return INT;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 19 "scanner.l"
-{cout << yytext; return CHAR;}
+#line 17 "scanner.l"
+{yylval.text = "char"; return CHAR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 20 "scanner.l"
-{cout << yytext; return BOOL;}
+#line 18 "scanner.l"
+{yylval.text = "bool"; return BOOL;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 21 "scanner.l"
-{cout << yytext; return VOID;}
+#line 19 "scanner.l"
+{yylval.text = "void"; return VOID;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 22 "scanner.l"
-{cout << yytext; return TRUE;}
+#line 20 "scanner.l"
+{yylval.text = "True"; printf("%s", yytext); return TRUE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 23 "scanner.l"
-{cout << yytext; return FALSE;}
+#line 21 "scanner.l"
+{yylval.text = "False"; printf("%s", yytext); return FALSE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 24 "scanner.l"
-{cout << yytext; return IF;}
+#line 22 "scanner.l"
+{yylval.text = "if"; printf("%s", yytext); return IF;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 25 "scanner.l"
-{cout << yytext; return FOR;}
+#line 23 "scanner.l"
+{yylval.text = "for"; printf("%s", yytext); return FOR;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 26 "scanner.l"
-{cout << yytext; return WHILE;}
+#line 24 "scanner.l"
+{yylval.text = "while"; printf("%s", yytext); return WHILE;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 27 "scanner.l"
-{cout << yytext; return ELSE;}
+#line 25 "scanner.l"
+{yylval.text = "else"; printf("%s", yytext); return ELSE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 28 "scanner.l"
-{cout << yytext; return PRINT;}
+#line 26 "scanner.l"
+{yylval.text = "print"; printf("%s", yytext); return PRINT;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 29 "scanner.l"
-{cout << yytext; return INPUT;}
+#line 27 "scanner.l"
+{yylval.text = "input"; printf("%s", yytext); return INPUT;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 30 "scanner.l"
-{cout << yytext; return AND;}
+#line 28 "scanner.l"
+{yylval.text = "and"; printf("%s", yytext); return AND;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 31 "scanner.l"
-{cout << yytext; return OR;}
+#line 29 "scanner.l"
+{yylval.text = "or"; printf("%s", yytext); return OR;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{cout << yytext; return NOT;}
+#line 30 "scanner.l"
+{yylval.text = "not"; printf("%s", yytext); return NOT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 33 "scanner.l"
-{cout << yytext; return BREAK;}
+#line 31 "scanner.l"
+{yylval.text = "break"; printf("%s", yytext); return BREAK;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 34 "scanner.l"
-{cout << yytext; return RETURN;}
+#line 32 "scanner.l"
+{yylval.text = "return"; printf("%s", yytext); return RETURN;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 35 "scanner.l"
-{cout << yytext; return RDOP;}
+#line 33 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return RDOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 36 "scanner.l"
-{cout << yytext; return ROP;}
+#line 34 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return ROP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 37 "scanner.l"
-{cout << yytext; return EQUAL;}
+#line 35 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return AOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 38 "scanner.l"
-{cout << yytext; return AOP;}
+#line 36 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return EQUAL;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 39 "scanner.l"
-{cout << yytext; return SOP;}
+#line 37 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return SOP;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 40 "scanner.l"
-{cout << yytext; return MOP;}
+#line 38 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return MOP;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 41 "scanner.l"
-{cout << yytext; return IN;}
+#line 39 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return IN;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 42 "scanner.l"
-{cout << yytext; return OUT;}
+#line 40 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return OUT;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 43 "scanner.l"
-{cout << yytext; return ID;}
+#line 41 "scanner.l"
+{yylval.text = strdup(yytext); printf("%s", yytext); return ID;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 44 "scanner.l"
-{cout << yytext; return NUMBER;}
+#line 42 "scanner.l"
+{yylval.number = atoi(yytext); printf("%d", yylval.number); return NUMBER;}
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 45 "scanner.l"
-{++lineno; cout << endl;}
+#line 43 "scanner.l"
+{printf("\n"); ++lineno;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 46 "scanner.l"
-{cout << yytext; return ';';}
+#line 44 "scanner.l"
+{printf("%s", yytext); return ';';}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 47 "scanner.l"
-{cout << yytext << " "; return '?';}
+#line 45 "scanner.l"
+{printf("%s", yytext); return '?';}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 48 "scanner.l"
-{cout << yytext << " "; return ':';}
+#line 46 "scanner.l"
+{printf("%s", yytext); return ':';}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 49 "scanner.l"
-{cout << yytext << " "; return ',';}
+#line 47 "scanner.l"
+{printf("%s", yytext); return ',';}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 50 "scanner.l"
-{cout << "Unrecognised char";}
+#line 48 "scanner.l"
+{;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 51 "scanner.l"
+#line 49 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1002 "lex.yy.c"
+#line 1000 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2003,6 +2001,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 51 "scanner.l"
+#line 49 "scanner.l"
 
 

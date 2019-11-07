@@ -3,7 +3,7 @@ int f(void a, int v[], int b,int c,char q[][20]){
 int a, b;
 a = b + c;
 a[10] /= b+c;
-a[10][10][30] = a[][102][34] + 2;
+a[10][10] = a[][102] + 2;
 a = b + (c+d);
 not a;
 a = 2;

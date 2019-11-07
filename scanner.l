@@ -12,7 +12,7 @@ int lineno = 0;
 [)]					{printf("%s", yytext); return ')';}
 [\]]				{printf("%s", yytext); return ']';}
 [\[]				{printf("%s", yytext); return '[';}
-["'][^"']+["'] 		{yylval.text = strdup(yytext); return STRING;}
+["'][^"']+["'] 		{yylval.text = strdup(yytext); printf("%s", yytext); return STRING;}
 int					{yylval.text = "int"; return INT;}
 char				{yylval.text = "char"; return CHAR;}
 bool				{yylval.text = "bool"; return BOOL;}

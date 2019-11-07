@@ -45,19 +45,19 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258,
-    ID = 259,
-    INT = 260,
-    CHAR = 261,
-    BOOL = 262,
-    VOID = 263,
-    IF = 264,
-    ELSE = 265,
-    FOR = 266,
-    WHILE = 267,
-    INPUT = 268,
-    PRINT = 269,
-    ROP = 270,
+    ID = 258,
+    INT = 259,
+    CHAR = 260,
+    BOOL = 261,
+    VOID = 262,
+    IF = 263,
+    ELSE = 264,
+    FOR = 265,
+    WHILE = 266,
+    INPUT = 267,
+    PRINT = 268,
+    ROP = 269,
+    STRING = 270,
     RDOP = 271,
     SOP = 272,
     MOP = 273,
@@ -72,13 +72,25 @@ extern int yydebug;
     RETURN = 282,
     IN = 283,
     OUT = 284,
-    STRING = 285
+    NUMBER = 285
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 10 "parser.y" /* yacc.c:1909  */
+
+  char *text;
+  struct ASTNode *node;
+  int number;
+
+#line 91 "parser.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
