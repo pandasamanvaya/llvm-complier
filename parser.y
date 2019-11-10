@@ -17,41 +17,46 @@
 %token <text> RDOP SOP MOP AOP AND OR NOT TRUE FALSE EQUAL BREAK RETURN IN OUT
 %token <number> NUMBER
 %type <node> Expr Var OrTerm AndTerm MulTerm SumTerm TerExpr Constant FunCall
-%type <node> Term RelTerm UnTerm NonVar Type ExprStat LoopStat CondStat
+%type <node> Term RelTerm UnTerm NonVar Type ExprStat LoopStat CondStat InpList
+%type <node> InpStat OutList OutStat VarList VarDec StatList Statement ParamList 
+%type <node> Param FuncDec VarDecList
 %%
 
 Goal: DecList;            
-DecList: DecList Dec
-  | Dec                                   
+DecList: FuncDecList                                 
+  | VarDecList                                
   ;
-Dec: FuncDec                                 
-  | VarDec                                
+VarDecList: VarDec ';' VarDecList          {$$ = getASTNodeVarDecList($1, $3);}
+  | VarDec ';'                             {$$ = getASTNodeVarDecList($1, NULL);}                                     
   ;
 //Variable
-VarDec: Type VarList ';'     
+VarDec: Type VarList                       {$$ = getASTNodeVarList($1, $2);}
   ;
-VarList: VarList',' Var       
-  | Var                                             
+VarList: Var ',' VarList                   {$$ = getASTNodeVardec($1, $3);}
+  | Var                                    {$$ = getASTNodeVardec($1, NULL);}
   ;
-
 //Function
-FuncDec: Type ID '(' ParamList ')' '{'VarDec StatList'}' 
-  | Type ID '(' ParamList ')' '{'StatList'}'
-  | Type ID '(' ParamList ')' ';'
+FuncDecList: FuncDec VarDecList             {printAST($2);}
+  | FuncDec                                 {printAST($1);}
+  ; 
+FuncDec: Type ID '(' ParamList ')' '{'VarDecList StatList'}' {$$ = getASTNodeFunction($1, $2, $4, $7, $8);}
+  | Type ID '(' ParamList ')' '{'StatList'}'                 {$$ = getASTNodeFunction($1, $2, $4, NULL, $7);}
+  | Type ID '(' ')' '{'VarDecList StatList'}'                {$$ = getASTNodeFunction($1, $2, NULL, $6, $7);}
+  | Type ID '(' ')' '{'StatList'}'                           {$$ = getASTNodeFunction($1, $2, NULL, NULL, $6);}
   ;
-Type: INT          {printf("int ");}
-    | CHAR         {printf("char ");}
-    | BOOL         {printf("bool ");}
-    | VOID         {printf("void ");}
+Type: INT          {$$ = getASTNodeDType("int");}
+    | CHAR         {$$ = getASTNodeDType("char");}
+    | BOOL         {$$ = getASTNodeDType("bool");}
+    | VOID         {$$ = getASTNodeDType("void");}
   ;
-ParamList: ParamList ',' Param         
-  | Param                              
+ParamList: ParamList ',' Param              {$$ = getASTNodeParamList($1, $3);}  
+  | Param                                   {$$ = getASTNodeParamList($1, NULL);}
   ;
-Param: Type Var                        
-  | ;                                  
+Param: Type Var                             {$$ = getASTNodeParam($1, $2);}
+  ;                                  
 //Statement
-StatList: Statement                         
-	| StatList Statement
+StatList: Statement                         {$$ = getASTNodeStat($1, NULL);}
+	| Statement StatList                      {$$ = getASTNodeStat($1, $2);}
   ;
 Statement: ExprStat    
   | CondStat                               
@@ -63,35 +68,35 @@ Statement: ExprStat
 IOStat: InpStat ';'                         
   | OutStat ';'                             
   ;
-InpStat: INPUT IN InpList  
+InpStat: INPUT IN InpList                   {$$ = getASTNodeInputStat($3);}
+;
+InpList: Var IN InpList                     {$$ = getASTNodeInputList($1, $3);}
+  | Var                                     {$$ = getASTNodeInputList($1, NULL);}
   ;
-InpList: Var IN InpList
-  | Var                                     
+OutStat: PRINT OUT OutList                  {$$ = getASTNodeOutputStat($3);}
   ;
-OutStat: PRINT OUT OutList
-  ;
-OutList: OutList OUT Expr
-  | Expr                                  
-  | OutList OUT STRING
-  | STRING                                        
+OutList: Expr OUT OutList                   {$$ = getASTNodeOutputList($1, NULL, $3);}
+  | Expr                                    {$$ = getASTNodeOutputList($1, NULL, NULL);}
+  | STRING OUT OutList                      {$$ = getASTNodeOutputList(NULL, $1, $3);}
+  | STRING                                  {$$ = getASTNodeOutputList(NULL, $1, NULL);}      
   ;
 //Return
 RetStat: RETURN ';'
   | RETURN Expr ';'
   ;
 //Loops
-LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDec StatList'}' {$$ = getASTNodeFor($3, $5, $7);}
-  | FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList'}' {$$ = getASTNodeFor($3, $5, $7);}
-  | WHILE '('Expr')' '{' VarDec StatList '}'    {$$ = getASTNodeWhile($3);}
-  | WHILE '('Expr')' '{' StatList '}'           {$$ = getASTNodeWhile($3);}
+LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDecList StatList'}' {$$ = getASTNodeFor($3, $5, $7);}
+  | FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDecList StatList'}'
+  | WHILE '('Expr')' '{' VarDecList StatList '}'    {$$ = getASTNodeWhile($3);}
+  | WHILE '('Expr')' '{' StatList '}'
   ;
 //Conditions 
-CondStat: IF '('Expr')' '{' VarDec StatList'}'        {$$ = getASTNodeIf($3);}
-  | IF '('Expr')' '{' StatList'}'                     {$$ = getASTNodeIf($3);}
-  | IF '('Expr')' '{' VarDec StatList'}' ELSE '{' VarDec StatList'}'   {$$ = getASTNodeIf($3);}
-  | IF '('Expr')' '{'VarDec StatList'}' ELSE '{'StatList'}'   {$$ = getASTNodeIf($3);}
-  | IF '('Expr')' '{'StatList'}' ELSE '{' VarDec StatList'}'  {$$ = getASTNodeIf($3);}
-  | IF '('Expr')' '{'StatList'}' ELSE '{'StatList'}'          {$$ = getASTNodeIf($3);}
+CondStat: IF '('Expr')' '{' VarDecList StatList'}'        {$$ = getASTNodeIf($3, $6, $7, NULL, NULL);}
+  | IF '('Expr')' '{' StatList'}'                         {$$ = getASTNodeIf($3, NULL, $6, NULL, NULL);}
+  | IF '('Expr')' '{' VarDecList StatList'}' ELSE '{' VarDecList StatList'}'   {$$ = getASTNodeIf($3, $6, $7, $11, $12);}
+  | IF '('Expr')' '{' VarDecList StatList'}' ELSE '{' StatList'}'         {$$ = getASTNodeIf($3, $6, $7, NULL, $11);}
+  | IF '('Expr')' '{' StatList'}' ELSE '{' VarDecList StatList'}'         {$$ = getASTNodeIf($3, NULL, $6, $10, $11);}
+  | IF '('Expr')' '{' StatList'}' ELSE '{' StatList'}'                    {$$ = getASTNodeIf($3, NULL, $6, NULL, $10);}
   ;
 //All Expressions
 ExprStat: Expr ';'                   

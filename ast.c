@@ -120,14 +120,21 @@ struct ASTNode *getASTNodeWhile(struct ASTNode *condition)
 	return node;
 }
 
-struct ASTNode *getASTNodeIf(struct ASTNode *condition)
+struct ASTNode *getASTNodeIf(struct ASTNode *condition,
+							struct ASTNode *ifvar,
+							struct ASTNode *ifstat,
+							struct ASTNode *elsevar,
+							struct ASTNode *elsestat)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = If;
 	node->ifnode.condition = condition;
-
+	node->ifnode.ifvar = ifvar;
+	node->ifnode.ifstat = ifstat;
+	node->ifnode.elsevar = elsevar;
+	node->ifnode.elsestat = elsestat;
 	return node;
 }
 
@@ -146,14 +153,155 @@ struct ASTNode *getASTNodeFor(struct ASTNode *init,
 	return node;
 }
 
-struct ASTNode *getASTNodeFunction(char *name)
+struct ASTNode *getASTNodeFunction(struct ASTNode *type,
+								char *name,
+								struct ASTNode *paramlist,
+								struct ASTNode *varlist,
+								struct ASTNode *statlist)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = Function;
 	node->functionnode.name = name;
+	node->functionnode.type = type;
+	node->functionnode.paramlist = paramlist;
+	node->functionnode.varlist = varlist;
+	node->functionnode.statlist = statlist;
 
+	return node;
+}
+
+struct ASTNode *getASTNodeInputStat(struct ASTNode *statlist)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Input;
+	node->inputstat.list = statlist;
+
+	return node;
+}
+
+struct ASTNode *getASTNodeInputList(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = InputList;
+	node->inputlist.left = left;
+	node->inputlist.right = right;
+
+	return node;
+}
+
+struct ASTNode *getASTNodeOutputStat(struct ASTNode *statlist)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Output;
+	node->outputstat.list = statlist;
+
+	return node;
+}
+
+struct ASTNode *getASTNodeOutputList(struct ASTNode *left,
+									char *str,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = OutputList;
+	node->outputlist.left = left;
+	node->outputlist.str = str;
+	node->outputlist.right = right;
+
+	return node;
+}
+
+struct ASTNode *getASTNodeVarDecList(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = VarDecList;
+	node->vardeclist.left = left;
+	node->vardeclist.right = right;
+	return node;
+}
+
+struct ASTNode *getASTNodeVardec(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Vardec;
+	node->vardec.left = left;
+	node->vardec.right = right;
+	return node;
+}
+
+struct ASTNode *getASTNodeVarList(struct ASTNode *type,
+									struct ASTNode *list)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Varlist;
+	node->varlist.type = type;
+	node->varlist.list = list;
+	return node;
+}
+
+struct ASTNode *getASTNodeStat(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Statement;
+	node->statment.left = left;
+	node->statment.right = right;
+	return node;
+}
+
+struct ASTNode *getASTNodeParamList(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = ParamList;
+	node->paramlist.left = left;
+	node->paramlist.right = right;
+	return node;
+}
+
+struct ASTNode *getASTNodeParam(struct ASTNode *type,
+							struct ASTNode *var)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Param;
+	node->param.type = type;
+	node->param.var = var;
+	return node;
+}
+
+struct ASTNode *getASTNodeDType(char *type)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Dtype;
+	node->dtype = type;
+	// printf("%s", node->dtype);
 	return node;
 }
 
@@ -168,12 +316,12 @@ struct ASTNode *getASTNodeIDLiteral(char *litval)
 	return node;
 }
 
-void printPostFix(struct ASTNode *root)
+void printAST(struct ASTNode *root)
 {	
 	switch (root->nodetype) 
 	{
 		case BinaryOp:
-						printPostFix(root->binarynode.left);
+						printAST(root->binarynode.left);
 						char *op = root->binarynode.operator;
 						switch (root->binarynode.optype) 
 						{
@@ -226,51 +374,119 @@ void printPostFix(struct ASTNode *root)
 									printf(" != ");
 								break;
 						}
-						printPostFix(root->binarynode.right);
+						printAST(root->binarynode.right);
 						break;
 
-		case TernaryOp: printPostFix(root->ternarynode.first);
+		case TernaryOp: printAST(root->ternarynode.first);
 						printf("? ");
-						printPostFix(root->ternarynode.second);
+						printAST(root->ternarynode.second);
 						printf(": ");
-						printPostFix(root->ternarynode.third);
-						// printf("? ");
+						printAST(root->ternarynode.third);
 						break;
 
-		case StringOp: printPostFix(root->stringnode.operand);
+		case StringOp: printAST(root->stringnode.operand);
 						printf(" = ");
 						printf("%s", root->stringnode.string);
 						break;
 		case Array1D:
 					printf("%s[", root->array1dnode.name);
 					if(root->array1dnode.value != NULL)
-						printPostFix(root->array1dnode.value);
+						printAST(root->array1dnode.value);
 					printf("]");
 					break;
 		case Array2D:
 					printf("%s[", root->array2dnode.name);
 					if(root->array2dnode.value1 != NULL)
-						printPostFix(root->array2dnode.value1);
+						printAST(root->array2dnode.value1);
 					printf("][");
-					printPostFix(root->array2dnode.value2);
+					printAST(root->array2dnode.value2);
 					printf("]");
 					break;
 		case Function:
-					printf("%s(", root->functionnode.name);
+					printAST(root->functionnode.type);
+					printf(" %s( ", root->functionnode.name);
+					if(root->functionnode.paramlist != NULL)
+						printAST(root->functionnode.paramlist);
+					printf(")\n{\n");
+					if(root->functionnode.varlist != NULL)
+						printAST(root->functionnode.varlist);
+					printAST(root->functionnode.statlist);
+					printf("}");
 					break;
+		case Dtype:	printf("%s ", root->dtype);
+						break;
 		case INTLIT: printf("%d", root->litval);
 						break;
 		case BOOLLIT: printf("%s", root -> boollit);
 						break;
 		case IDLIT:	printf("%s", root -> idlit);
 						break;
-		case While: printPostFix(root->whilenode.condition);
+		case While: printAST(root->whilenode.condition);
 						break;
-		case For: printPostFix(root->fornode.init);
-					printPostFix(root->fornode.condition);
-					printPostFix(root->fornode.update);
+		case For: printAST(root->fornode.init);
+					printAST(root->fornode.condition);
+					printAST(root->fornode.update);
 						break;
-		case If: printPostFix(root->ifnode.condition);
+		case If: printAST(root->ifnode.condition);
+						break;
+		case Input: printf("input >> ");
+					printAST(root->inputstat.list);
+						break;
+		case InputList: printAST(root->inputlist.left);
+						if(root->inputlist.right != NULL){
+							printf(" >> ");
+							printAST(root->inputlist.right);
+						}
+						break;
+		case Output: printf("print");
+					printAST(root->outputstat.list);
+						break;
+		case OutputList:
+						if(root->outputlist.left != NULL){
+							printf(" << ");
+							printAST(root->outputlist.left);
+						}
+						if(root->outputlist.str != NULL){
+							printf(" << ");
+							printf("%s", root->outputlist.str);
+						}
+						if(root->outputlist.right != NULL){
+							printAST(root->outputlist.right);
+						}
+						break;
+		case VarDecList: printAST(root->vardeclist.left);
+						printf(";\n");
+					if(root->vardeclist.right != NULL)
+						printAST(root->vardeclist.right);
+						break;
+
+		case Vardec: printAST(root->vardec.left);
+					if(root->vardec.right != NULL){
+						printf(", ");
+						printAST(root->vardec.right);
+					}
+						break;
+
+		case Varlist: printAST(root->varlist.type); 
+					printAST(root->varlist.list);
+						break;
+		case Statement: printAST(root->statment.left);
+						printf(";\n");
+					if(root->statment.right != NULL)
+						printAST(root->statment.right);
+						break;
+
+		case ParamList: printAST(root->paramlist.left);
+					if(root->paramlist.right != NULL){
+						printf(", ");
+						printAST(root->paramlist.right);
+					}
+						break;
+		case Param:
+					if(root->param.type != NULL){
+						printAST(root->param.type);
+						printAST(root->param.var);
+					}
 						break;
 	}
 };

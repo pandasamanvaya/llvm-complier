@@ -787,43 +787,43 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 8 "scanner.l"
-{printf("%s", yytext); /* eat white spaces */}
+{/* eat white spaces */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 9 "scanner.l"
-{printf("%s", yytext); return '{';}
+{return '{';}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 10 "scanner.l"
-{printf("%s", yytext); return '}';}
+{return '}';}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 11 "scanner.l"
-{printf("%s", yytext); return '(';}
+{return '(';}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 12 "scanner.l"
-{printf("%s", yytext); return ')';}
+{return ')';}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 13 "scanner.l"
-{printf("%s", yytext); return ']';}
+{return ']';}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 14 "scanner.l"
-{printf("%s", yytext); return '[';}
+{return '[';}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
 #line 15 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return STRING;}
+{yylval.text = strdup(yytext);return STRING;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -878,12 +878,12 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 26 "scanner.l"
-{yylval.text = "print"; printf("%s", yytext); return PRINT;}
+{yylval.text = "print"; return PRINT;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 27 "scanner.l"
-{yylval.text = "input"; printf("%s", yytext); return INPUT;}
+{yylval.text = "input"; return INPUT;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
@@ -913,78 +913,78 @@ YY_RULE_SETUP
 case 26:
 YY_RULE_SETUP
 #line 33 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return RDOP;}
+{yylval.text = strdup(yytext); return RDOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 34 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return ROP;}
+{yylval.text = strdup(yytext); return ROP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 35 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return AOP;}
+{yylval.text = strdup(yytext); return AOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 36 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return EQUAL;}
+{yylval.text = strdup(yytext); return EQUAL;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 37 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return SOP;}
+{yylval.text = strdup(yytext); return SOP;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return MOP;}
+{yylval.text = strdup(yytext); return MOP;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 39 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return IN;}
+{yylval.text = strdup(yytext); return IN;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 40 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return OUT;}
+{yylval.text = strdup(yytext); return OUT;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 41 "scanner.l"
-{yylval.text = strdup(yytext); printf("%s", yytext); return ID;}
+{yylval.text = strdup(yytext);return ID;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 42 "scanner.l"
-{yylval.number = atoi(yytext); printf("%d", yylval.number); return NUMBER;}
+{yylval.number = atoi(yytext); return NUMBER;}
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
 #line 43 "scanner.l"
-{printf("\n"); ++lineno;}
+{++lineno;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 44 "scanner.l"
-{printf("%s", yytext); return ';';}
+{return ';';}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 45 "scanner.l"
-{printf("%s", yytext); return '?';}
+{return '?';}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-{printf("%s", yytext); return ':';}
+{return ':';}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 47 "scanner.l"
-{printf("%s", yytext); return ',';}
+{return ',';}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
