@@ -109,13 +109,17 @@ struct ASTNode *getASTNodeBoolLiteral(char *litval)
 	return node;
 }
 
-struct ASTNode *getASTNodeWhile(struct ASTNode *condition)
+struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
+							struct ASTNode *varlist,
+							struct ASTNode *statlist)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = While;
 	node->whilenode.condition = condition;
+	node->whilenode.varlist = varlist;
+	node->whilenode.statlist = statlist;
 
 	return node;
 }
@@ -140,7 +144,9 @@ struct ASTNode *getASTNodeIf(struct ASTNode *condition,
 
 struct ASTNode *getASTNodeFor(struct ASTNode *init,
 							struct ASTNode *condition,
-							struct ASTNode *update)
+							struct ASTNode *update,
+							struct ASTNode *varlist,
+							struct ASTNode *statlist)
 {
 	struct ASTNode *node; 
 
@@ -149,6 +155,8 @@ struct ASTNode *getASTNodeFor(struct ASTNode *init,
 	node->fornode.init = init;
 	node->fornode.condition = condition;
 	node->fornode.update = update;
+	node->fornode.varlist = varlist;
+	node->fornode.statlist = statlist;
 
 	return node;
 }
@@ -294,6 +302,30 @@ struct ASTNode *getASTNodeParam(struct ASTNode *type,
 	return node;
 }
 
+struct ASTNode *getASTNodeFunCall(char *name,
+							struct ASTNode *arglist)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = FunCall;
+	node->funcall.name = name;
+	node->funcall.arglist = arglist;
+	return node;
+}
+
+struct ASTNode *getASTNodeArg(struct ASTNode *left,
+							struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = ArgList;
+	node->arg.left = left;
+	node->arg.right = right;
+	return node;
+}
+
 struct ASTNode *getASTNodeDType(char *type)
 {
 	struct ASTNode *node; 
@@ -383,7 +415,9 @@ void printAST(struct ASTNode *root)
 						printf(": ");
 						printAST(root->ternarynode.third);
 						break;
-
+		case UnaryOp:  printf("%s ", root->unarynode.operator);
+						printAST(root->unarynode.operand);
+						break;
 		case StringOp: printAST(root->stringnode.operand);
 						printf(" = ");
 						printf("%s", root->stringnode.string);
@@ -421,13 +455,40 @@ void printAST(struct ASTNode *root)
 						break;
 		case IDLIT:	printf("%s", root -> idlit);
 						break;
-		case While: printAST(root->whilenode.condition);
+		case While: printf("while(");
+					printAST(root->whilenode.condition);
+					printf("){\n");
+					if(root->whilenode.varlist != NULL)
+						printAST(root->whilenode.varlist);
+					printAST(root->whilenode.statlist);
+					printf("}");
 						break;
-		case For: printAST(root->fornode.init);
+		case For: 	printf("for( ");
+					printAST(root->fornode.init);
+					printf("; ");
 					printAST(root->fornode.condition);
+					printf("; ");
 					printAST(root->fornode.update);
+					printf("){\n");
+					if(root->fornode.varlist != NULL)
+						printAST(root->fornode.varlist);
+					printAST(root->fornode.statlist);
+					printf("}");
 						break;
-		case If: printAST(root->ifnode.condition);
+		case If: printf("if ("); 
+				printAST(root->ifnode.condition);
+				printf("){\n");
+				if(root->ifnode.ifvar != NULL)
+					printAST(root->ifnode.ifvar);
+				printAST(root->ifnode.ifstat);
+				printf("}\n");
+				if(root->ifnode.elsestat != NULL){
+					printf("else{\n");
+					if(root->ifnode.elsevar != NULL) 
+						printAST(root->ifnode.elsevar);
+					printAST(root->ifnode.elsestat);
+					printf("}\n");
+				}
 						break;
 		case Input: printf("input >> ");
 					printAST(root->inputstat.list);
@@ -488,5 +549,17 @@ void printAST(struct ASTNode *root)
 						printAST(root->param.var);
 					}
 						break;
+		case FunCall: printf("%s (", root->funcall.name);
+					printAST(root->funcall.arglist);
+					printf(")");	
+					break;
+		case ArgList: 
+					if(root->arg.left != NULL)
+						printAST(root->arg.left);
+					if(root->arg.right != NULL){
+						printf(", ");
+						printAST(root->arg.right);
+					}
+					break;
 	}
 };

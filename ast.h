@@ -4,7 +4,7 @@ typedef enum  astnodetype {BinaryOp, UnaryOp, TernaryOp, StringOp,
 							BOOLLIT, IDLIT, While, For, If, Input, 
 							InputList, Output, OutputList, Vardec, 
 							Varlist, Dtype, Statement, Param, ParamList,
-							VarDecList} ASTNodeType;
+							VarDecList, FunCall, ArgList} ASTNodeType;
 typedef enum  binaryoptype {ASSIGN, SUMOP, RELOP, RELDOP, DASSIGN, MULOP, ANDOP, OROP, NOTOP} BinaryOpType; 
 
 extern struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
@@ -15,7 +15,20 @@ extern struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left,
 extern struct ASTNode *getASTNodeStringOp(struct ASTNode *operand, 
 									char *string);
 
-extern struct ASTNode *getASTNodeWhile(struct ASTNode *condition);
+extern struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
+										struct ASTNode *varlist,
+										struct ASTNode *statlist);
+extern struct ASTNode *getASTNodeFor(struct ASTNode *init,
+									struct ASTNode *condition, 
+									struct ASTNode *update,
+									struct ASTNode *varlist,
+									struct ASTNode *statlist);
+
+extern struct ASTNode *getASTNodeFunCall(char *name,
+										struct ASTNode *varlist);
+extern struct ASTNode *getASTNodeArg(struct ASTNode *left,
+									struct ASTNode *right);
+
 extern struct ASTNode *getASTNodeIf(struct ASTNode *condition,
 									struct ASTNode *ifvar,
 									struct ASTNode *ifstat,
@@ -68,9 +81,6 @@ extern struct ASTNode *getASTNode2DArray(char *name,
 									struct ASTNode *value1, 
 									struct ASTNode *value2);
 
-extern struct ASTNode *getASTNodeFor(struct ASTNode *init,
-									struct ASTNode *condition, 
-									struct ASTNode *update);
 
 extern void printAST(struct ASTNode *root);
 
@@ -108,12 +118,16 @@ struct ASTNode {
 
 		struct ASTWhile {
 			struct ASTNode *condition;
+			struct ASTNode *varlist;
+			struct ASTNode *statlist;
 		} whilenode;
 
 		struct ASTFor {
 			struct ASTNode *init;
 			struct ASTNode *condition;
 			struct ASTNode *update;
+			struct ASTNode *varlist;
+			struct ASTNode *statlist;
 		} fornode;
 		
 		struct ASTIf{
@@ -189,6 +203,16 @@ struct ASTNode {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} paramlist;
+
+		struct ASTArg{
+			struct ASTNode *left;
+			struct ASTNode *right;
+		} arg;
+
+		struct ASTFunCall{
+			char *name;
+			struct ASTNode *arglist;
+		} funcall;
 
 		int litval;
 		union{

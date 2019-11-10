@@ -5,4 +5,16 @@ int f(int a, char c)
 	a = 3+1;
 	input >> a >> b >> c;
 	print << "working" << (a+b)/2 << "done";
+	if(a>2){
+		print << "here";
+	}
+	else{
+		print << "not here";
+	}
+	for(i = 0; i < n; i+= 1){
+		i += 1;
+	}
+	while(not a){
+		input >> c;
+	}
 }

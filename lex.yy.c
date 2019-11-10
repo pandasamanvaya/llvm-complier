@@ -848,32 +848,32 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 20 "scanner.l"
-{yylval.text = "True"; printf("%s", yytext); return TRUE;}
+{yylval.text = "True"; return TRUE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 21 "scanner.l"
-{yylval.text = "False"; printf("%s", yytext); return FALSE;}
+{yylval.text = "False"; return FALSE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 22 "scanner.l"
-{yylval.text = "if"; printf("%s", yytext); return IF;}
+{yylval.text = "if"; return IF;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 23 "scanner.l"
-{yylval.text = "for"; printf("%s", yytext); return FOR;}
+{yylval.text = "for"; return FOR;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 24 "scanner.l"
-{yylval.text = "while"; printf("%s", yytext); return WHILE;}
+{yylval.text = "while"; return WHILE;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 25 "scanner.l"
-{yylval.text = "else"; printf("%s", yytext); return ELSE;}
+{yylval.text = "else"; return ELSE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
@@ -888,27 +888,27 @@ YY_RULE_SETUP
 case 21:
 YY_RULE_SETUP
 #line 28 "scanner.l"
-{yylval.text = "and"; printf("%s", yytext); return AND;}
+{yylval.text = "and"; return AND;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 29 "scanner.l"
-{yylval.text = "or"; printf("%s", yytext); return OR;}
+{yylval.text = "or"; return OR;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 30 "scanner.l"
-{yylval.text = "not"; printf("%s", yytext); return NOT;}
+{yylval.text = "not"; return NOT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 31 "scanner.l"
-{yylval.text = "break"; printf("%s", yytext); return BREAK;}
+{yylval.text = "break"; return BREAK;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 32 "scanner.l"
-{yylval.text = "return"; printf("%s", yytext); return RETURN;}
+{yylval.text = "return"; return RETURN;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
