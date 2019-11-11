@@ -65,7 +65,7 @@
 #line 1 "parser.y" /* yacc.c:339  */
 
   #include <stdio.h>
-  #include "ast.h"
+  #include "ast_print.h"
   extern int yylex();
   extern int yyparse();
   extern FILE *yyin;

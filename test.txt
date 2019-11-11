@@ -1,6 +1,7 @@
 
 int f(void a, int v[], int b,int c,char q[][20]){
 int a, b;
+char c;
 a = b + c;
 a[10] /= b+c;
 a[10][10] = a[][102] + 2;

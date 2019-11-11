@@ -82,10 +82,6 @@ extern struct ASTNode *getASTNode2DArray(char *name,
 									struct ASTNode *value1, 
 									struct ASTNode *value2);
 
-
-extern void printAST(struct ASTNode *root);
-
-
 struct ASTNode {
 	ASTNodeType nodetype;
 
