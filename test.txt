@@ -30,7 +30,6 @@ if (n%i == 0)
 {
 c = b+b;
 a = 2;
-break;
 } 
 else{
 while(b>3){

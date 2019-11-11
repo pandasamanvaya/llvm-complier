@@ -4,7 +4,7 @@ typedef enum  astnodetype {BinaryOp, UnaryOp, TernaryOp, StringOp,
 							BOOLLIT, IDLIT, While, For, If, Input, 
 							InputList, Output, OutputList, Vardec, 
 							Varlist, Dtype, Statement, Param, ParamList,
-							VarDecList, FunCall, ArgList} ASTNodeType;
+							VarDecList, FunCall, ArgList, Return} ASTNodeType;
 typedef enum  binaryoptype {ASSIGN, SUMOP, RELOP, RELDOP, DASSIGN, MULOP, ANDOP, OROP, NOTOP} BinaryOpType; 
 
 extern struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
@@ -23,6 +23,7 @@ extern struct ASTNode *getASTNodeFor(struct ASTNode *init,
 									struct ASTNode *update,
 									struct ASTNode *varlist,
 									struct ASTNode *statlist);
+extern struct ASTNode *getASTNodeReturn(struct ASTNode *expr);
 
 extern struct ASTNode *getASTNodeFunCall(char *name,
 										struct ASTNode *varlist);
@@ -154,6 +155,10 @@ struct ASTNode {
 			struct ASTNode *second;
 			struct ASTNode *third; 
 		} ternarynode;	
+
+		struct ASTReturnStat{
+			struct ASTNode *expr;
+		} returnstat;
 
 		struct ASTInputStat{
 			struct ASTNode *list;

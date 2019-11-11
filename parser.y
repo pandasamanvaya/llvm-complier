@@ -19,7 +19,7 @@
 %type <node> Expr Var OrTerm AndTerm MulTerm SumTerm TerExpr Constant FunCall
 %type <node> Term RelTerm UnTerm NonVar Type ExprStat LoopStat CondStat InpList
 %type <node> InpStat OutList OutStat VarList VarDec StatList Statement ParamList 
-%type <node> Param FuncDec VarDecList IOStat ArgList
+%type <node> Param FuncDec VarDecList IOStat ArgList RetStat
 %%
 
 Goal: DecList;            
@@ -81,8 +81,8 @@ OutList: Expr OUT OutList                   {$$ = getASTNodeOutputList($1, NULL,
   | STRING                                  {$$ = getASTNodeOutputList(NULL, $1, NULL);}      
   ;
 //Return
-RetStat: RETURN ';'
-  | RETURN Expr ';'
+RetStat: RETURN ';'                         {$$ = getASTNodeReturn(NULL);}
+  | RETURN Expr ';'                         {$$ = getASTNodeReturn($2);}
   ;
 //Loops
 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' VarDecList StatList'}' {$$ = getASTNodeFor($3, $5, $7, $10, $11);}
@@ -100,7 +100,6 @@ CondStat: IF '('Expr')' '{' VarDecList StatList'}'        {$$ = getASTNodeIf($3,
   ;
 //All Expressions
 ExprStat: Expr ';'                   
-  | BREAK ';'                        
   ;
 Expr: Var AOP Expr                  {$$ = getASTNodeBinaryOp($1, $3, DASSIGN, $2);}
   | Var EQUAL Expr                  {$$ = getASTNodeBinaryOp($1, $3, ASSIGN, $2);}

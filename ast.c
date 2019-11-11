@@ -302,6 +302,16 @@ struct ASTNode *getASTNodeParam(struct ASTNode *type,
 	return node;
 }
 
+struct ASTNode *getASTNodeReturn(struct ASTNode *expr)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Return;
+	node->returnstat.expr = expr;
+	return node;
+}
+
 struct ASTNode *getASTNodeFunCall(char *name,
 							struct ASTNode *arglist)
 {
@@ -516,7 +526,7 @@ void printAST(struct ASTNode *root)
 						}
 						break;
 		case VarDecList: printAST(root->vardeclist.left);
-						printf(";\n");
+						printf("\n");
 					if(root->vardeclist.right != NULL)
 						printAST(root->vardeclist.right);
 						break;
@@ -532,7 +542,7 @@ void printAST(struct ASTNode *root)
 					printAST(root->varlist.list);
 						break;
 		case Statement: printAST(root->statment.left);
-						printf(";\n");
+						printf("\n");
 					if(root->statment.right != NULL)
 						printAST(root->statment.right);
 						break;
@@ -561,5 +571,9 @@ void printAST(struct ASTNode *root)
 						printAST(root->arg.right);
 					}
 					break;
-	}
+		case Return: printf("return ");
+					if(root->returnstat.expr != NULL)
+						printAST(root->returnstat.expr);
+					break;
+	}	
 };
