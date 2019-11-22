@@ -1,19 +1,39 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/IR/Constants.h"
 #include <vector>
 #include "ast.h"
 #define plist vector<pair<Type *, string>>
-#define FuncArg pair<Function *, vector<string>>
+#define vlist vector<pair<Type *, vector<string>>>
+#define alist vector<pair<AllocaInst *, string>>
+#define null (Value *)Constant::getNullValue
 using namespace llvm;
 using namespace std;
 
 extern void genIRCode(struct ASTNode *Node);
 void genIRBinOp(struct ASTNode *Node);
 void setFuncArgs(Function *func, vector<string> args);
-FuncArg genIRFunction(struct ASTNode *Node, plist parameterlist);
+struct IRFunction *genIRFunction(struct ASTNode *Node);
 plist genIRParamList(plist parameterlist, struct ASTNode *Node);
 pair<Type *, string> genIRParam(struct ASTNode *Node);
 Type *genIRDtype(struct ASTNode *Node);
 string genIRId(struct ASTNode *Node);
+Value *genIRStatlist(struct ASTNode *Node, struct IRFunction *Func);
+pair<Type *, vector<string>> genIRVarDec(struct ASTNode *Node);
+vector<string> genIRVar(struct ASTNode *Node);
+Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func);
+Value *arithOp(Value *left, Value *right, string op);
+Value *genOperand(struct ASTNode *Node, struct IRFunction *Func);
+Value *getIdVal(string id, struct IRFunction *Func);
+vlist genIRVarList(vlist variablelist, struct ASTNode *Node);
+Value *getAddress(struct ASTNode *Node, struct IRFunction *Func);
+
+struct IRFunction{
+	Function *func;
+	BasicBlock *bb;
+	alist alloc;
+	vector<string> args;
+};

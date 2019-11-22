@@ -1,3 +1,5 @@
 int fname(int a, int b, int c){
-	a = 1;
+	int d, e;
+	d = a*(b/1)+711;
+	e = a-d+1;
 }
