@@ -162,8 +162,27 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex.
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -366,7 +385,7 @@ static const flex_int16_t yy_accept[99] =
         5,   31,   30,   40,   35,   39,   37,   27,   29,   27,
        38,   34,   34,   34,    7,    6,   34,   34,   34,   34,
        34,   34,   34,   34,   34,   34,   34,   34,    2,    3,
-       28,    0,   35,   33,   26,   32,   34,   34,   34,   34,
+       26,    0,   28,   35,   33,   32,   34,   34,   34,   34,
        34,   34,   34,   34,   34,   15,   34,   34,   22,   34,
        34,   34,   34,    8,   34,   34,   21,   34,   34,   34,
        34,   16,   34,    9,   23,   34,   34,   34,   34,   34,
@@ -422,7 +441,7 @@ static const flex_int16_t yy_base[101] =
       110,   91,   90,  110,   93,  110,  110,   31,   88,   32,
       110,    0,   78,   64,  110,  110,   66,   14,   69,   65,
        62,   21,   61,   58,   57,   65,   57,   61,  110,  110,
-      110,   86,   78,  110,  110,  110,    0,   55,   47,   59,
+      110,   86,  110,   78,  110,  110,    0,   55,   47,   59,
        50,   56,   59,   44,   44,    0,   17,   41,    0,   48,
        39,   46,   45,  110,   37,   46,    0,   40,   48,   34,
        42,    0,   29,    0,    0,   34,   27,   39,   32,   36,
@@ -452,14 +471,14 @@ static const flex_int16_t yy_nxt[156] =
        14,   15,   16,   17,   18,   19,   20,   21,   22,   23,
        24,   25,   26,    4,   27,   28,   29,   22,   30,   31,
        22,   32,   22,   22,   33,   34,   35,   36,   22,   22,
-       22,   37,   38,   39,   40,   44,   45,   45,   46,   51,
+       22,   37,   38,   39,   40,   45,   41,   41,   46,   51,
        56,   52,   47,   73,   97,   57,   74,   42,   96,   42,
        95,   94,   93,   92,   91,   90,   89,   88,   87,   86,
        85,   84,   83,   82,   81,   80,   79,   78,   77,   76,
-       75,   72,   71,   70,   69,   68,   67,   66,   65,   43,
+       75,   72,   71,   70,   69,   68,   67,   66,   65,   44,
        64,   63,   62,   61,   60,   59,   58,   55,   54,   53,
 
-       50,   49,   48,   45,   43,   41,   41,   41,   98,    3,
+       50,   49,   48,   41,   44,   43,   43,   41,   98,    3,
        98,   98,   98,   98,   98,   98,   98,   98,   98,   98,
        98,   98,   98,   98,   98,   98,   98,   98,   98,   98,
        98,   98,   98,   98,   98,   98,   98,   98,   98,   98,
@@ -477,7 +496,7 @@ static const flex_int16_t yy_chk[156] =
        32,   28,  100,   57,   95,   32,   57,   99,   90,   99,
        88,   87,   86,   83,   80,   79,   78,   77,   76,   73,
        71,   70,   69,   68,   66,   65,   63,   62,   61,   60,
-       58,   55,   54,   53,   52,   51,   50,   49,   48,   43,
+       58,   55,   54,   53,   52,   51,   50,   49,   48,   44,
        42,   38,   37,   36,   35,   34,   33,   31,   30,   29,
 
        27,   24,   23,   19,   15,   13,   12,    7,    3,   98,
@@ -487,6 +506,13 @@ static const flex_int16_t yy_chk[156] =
        98,   98,   98,   98,   98,   98,   98,   98,   98,   98,
        98,   98,   98,   98,   98
     } ;
+
+/* Table of booleans, true if rule could match eol. */
+static const flex_int32_t yy_rule_can_match_eol[43] =
+    {   0,
+0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 
+    0, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -504,11 +530,13 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
+#include <string>
+#include <string.h>
+using namespace std;
 #include "parser.tab.h"
-extern int yylex();
-int lineno = 0;
-#line 511 "lex.yy.c"
-#line 512 "lex.yy.c"
+extern "C" int yylex();
+#line 539 "lex.yy.c"
+#line 540 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -725,9 +753,9 @@ YY_DECL
 		}
 
 	{
-#line 7 "scanner.l"
+#line 9 "scanner.l"
 
-#line 731 "lex.yy.c"
+#line 759 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -773,6 +801,16 @@ yy_find_action:
 
 		YY_DO_BEFORE_ACTION;
 
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					
+    yylineno++;
+;
+			}
+
 do_action:	/* This label is used only to access EOF actions. */
 
 		switch ( yy_act )
@@ -786,217 +824,217 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 8 "scanner.l"
+#line 10 "scanner.l"
 {/* eat white spaces */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 9 "scanner.l"
+#line 11 "scanner.l"
 {return '{';}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 10 "scanner.l"
+#line 12 "scanner.l"
 {return '}';}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 11 "scanner.l"
+#line 13 "scanner.l"
 {return '(';}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 12 "scanner.l"
+#line 14 "scanner.l"
 {return ')';}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 13 "scanner.l"
+#line 15 "scanner.l"
 {return ']';}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 14 "scanner.l"
+#line 16 "scanner.l"
 {return '[';}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 15 "scanner.l"
-{yylval.text = strdup(yytext);return STRING;}
+#line 17 "scanner.l"
+{yylval.text = new string(strdup(yytext));return STRING;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 16 "scanner.l"
-{yylval.text = "int"; return INT;}
+#line 18 "scanner.l"
+{yylval.text = new string("int"); return INT;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 17 "scanner.l"
-{yylval.text = "char"; return CHAR;}
+#line 19 "scanner.l"
+{yylval.text = new string("char"); return CHAR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 18 "scanner.l"
-{yylval.text = "bool"; return BOOL;}
+#line 20 "scanner.l"
+{yylval.text = new string("bool"); return BOOL;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 19 "scanner.l"
-{yylval.text = "void"; return VOID;}
+#line 21 "scanner.l"
+{yylval.text = new string("void"); return VOID;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 20 "scanner.l"
-{yylval.text = "True"; return TRUE;}
+#line 22 "scanner.l"
+{yylval.text = new string("True"); return TRUE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 21 "scanner.l"
-{yylval.text = "False"; return FALSE;}
+#line 23 "scanner.l"
+{yylval.text = new string("False"); return FALSE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 22 "scanner.l"
-{yylval.text = "if"; return IF;}
+#line 24 "scanner.l"
+{yylval.text = new string("if"); return IF;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 23 "scanner.l"
-{yylval.text = "for"; return FOR;}
+#line 25 "scanner.l"
+{yylval.text = new string("for"); return FOR;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 24 "scanner.l"
-{yylval.text = "while"; return WHILE;}
+#line 26 "scanner.l"
+{yylval.text = new string("while"); return WHILE;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 25 "scanner.l"
-{yylval.text = "else"; return ELSE;}
+#line 27 "scanner.l"
+{yylval.text = new string("else"); return ELSE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 26 "scanner.l"
-{yylval.text = "print"; return PRINT;}
+#line 28 "scanner.l"
+{yylval.text = new string("print"); return PRINT;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 27 "scanner.l"
-{yylval.text = "input"; return INPUT;}
+#line 29 "scanner.l"
+{yylval.text = new string("input"); return INPUT;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 28 "scanner.l"
-{yylval.text = "and"; return AND;}
+#line 30 "scanner.l"
+{yylval.text = new string("and"); return AND;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 29 "scanner.l"
-{yylval.text = "or"; return OR;}
+#line 31 "scanner.l"
+{yylval.text = new string("or"); return OR;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 30 "scanner.l"
-{yylval.text = "not"; return NOT;}
+#line 32 "scanner.l"
+{yylval.text = new string("not"); return NOT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 31 "scanner.l"
-{yylval.text = "break"; return BREAK;}
+#line 33 "scanner.l"
+{yylval.text = new string("break"); return BREAK;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{yylval.text = "return"; return RETURN;}
+#line 34 "scanner.l"
+{yylval.text = new string("return"); return RETURN;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 33 "scanner.l"
-{yylval.text = strdup(yytext); return RDOP;}
+#line 35 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return RDOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 34 "scanner.l"
-{yylval.text = strdup(yytext); return ROP;}
+#line 36 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return ROP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 35 "scanner.l"
-{yylval.text = strdup(yytext); return AOP;}
+#line 37 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return AOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 36 "scanner.l"
-{yylval.text = strdup(yytext); return EQUAL;}
+#line 38 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return EQUAL;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 37 "scanner.l"
-{yylval.text = strdup(yytext); return SOP;}
+#line 39 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return SOP;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 38 "scanner.l"
-{yylval.text = strdup(yytext); return MOP;}
+#line 40 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return MOP;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 39 "scanner.l"
-{yylval.text = strdup(yytext); return IN;}
+#line 41 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return IN;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 40 "scanner.l"
-{yylval.text = strdup(yytext); return OUT;}
+#line 42 "scanner.l"
+{yylval.text = new string(strdup(yytext)); return OUT;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 41 "scanner.l"
-{yylval.text = strdup(yytext);return ID;}
+#line 43 "scanner.l"
+{yylval.text = new string(strdup(yytext));return ID;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 44 "scanner.l"
 {yylval.number = atoi(yytext); return NUMBER;}
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 43 "scanner.l"
-{++lineno;}
+#line 45 "scanner.l"
+{}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 44 "scanner.l"
+#line 46 "scanner.l"
 {return ';';}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 47 "scanner.l"
 {return '?';}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 46 "scanner.l"
+#line 48 "scanner.l"
 {return ':';}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 47 "scanner.l"
+#line 49 "scanner.l"
 {return ',';}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 48 "scanner.l"
+#line 50 "scanner.l"
 {;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 49 "scanner.l"
+#line 51 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1000 "lex.yy.c"
+#line 1038 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1364,6 +1402,10 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1440,6 +1482,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		
+    yylineno++;
+;
 
 	return c;
 }
@@ -1907,6 +1954,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -2001,6 +2051,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 49 "scanner.l"
+#line 51 "scanner.l"
 
 

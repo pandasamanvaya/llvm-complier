@@ -1,10 +1,6 @@
 #include "ir_gen.h"
 #include <iostream>
 
-static LLVMContext Context;
-static Module *ModuleOb = new Module("IR Generator", Context);
-static IRBuilder<> Builder(Context);
-
 vector<plist> variables;
 
 // void genIRBinOp(struct ASTNode *Node)
@@ -13,11 +9,11 @@ vector<plist> variables;
 // }
 Value *arithOp(Value *left, Value *right, string op)
 {
-	if(op == "+")		return Builder.CreateAdd(left, right, "sum");
-	else if (op == "-") return Builder.CreateSub(left, right, "diff");
-	else if (op == "*") return Builder.CreateMul(left, right, "mul");
-	else if (op == "/") return Builder.CreateSDiv(left, right, "div");
-	else if (op == "%") return Builder.CreateSRem(left, right, "rem");
+	if(op == "+" || op == "+=")		return Builder.CreateAdd(left, right, "sum");
+	else if (op == "-" || op == "-=") return Builder.CreateSub(left, right, "diff");
+	else if (op == "*" || op == "*=") return Builder.CreateMul(left, right, "mul");
+	else if (op == "/" || op == "/=") return Builder.CreateSDiv(left, right, "div");
+	else if (op == "%" || op == "%=") return Builder.CreateSRem(left, right, "rem");
 }
 
 Value *genIRStatlist(struct ASTNode *Node, struct IRFunction *Func)
@@ -37,35 +33,83 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 							Value *left = genIRStat(Node->binarynode.left, Func);
 							Value *right = genIRStat(Node->binarynode.right, Func);
 							return arithOp(left, right, Node->binarynode.op);
-							break;
 						}
 				case MULOP: {
 							Value *left = genIRStat(Node->binarynode.left, Func);
 							Value *right = genIRStat(Node->binarynode.right, Func);
 							return arithOp(left, right, Node->binarynode.op);
-							break;
 						}
 				case ASSIGN:{
-							// Value *left = getAddress(Node->binarynode.left, Func);
 							Value *left = getAddress(Node->binarynode.left, Func);
 							Value *right = genIRStat(Node->binarynode.right, Func);
 							return Builder.CreateStore(right, left);
-
-							break;
 						}
 				case DASSIGN:{
-							break;
-				}
+							Value *leftop = getAddress(Node->binarynode.left, Func);
+							Value *left = genOperand(Node->binarynode.left, Func);
+							Value *right = genIRStat(Node->binarynode.right, Func);
+							left = arithOp(left, right, Node->binarynode.op);
+							return Builder.CreateStore(left, leftop);
+						}
+				case ANDOP:{
+							Value *left = genIRStat(Node->binarynode.left, Func);
+							Value *right = genIRStat(Node->binarynode.right, Func);
+							return Builder.CreateAnd(left, right);
+						}
+				case OROP:{
+							Value *left = genIRStat(Node->binarynode.left, Func);
+							Value *right = genIRStat(Node->binarynode.right, Func);
+							return Builder.CreateOr(left, right);
+						}
+
 				default: break;
 
 				}
 				break;
 			}
+		case UnaryOp:{
+						if(Node->unarynode.optype == NOTOP){
+							Value *operand = genIRStat(Node->unarynode.operand, Func);
+							return Builder.CreateNot(operand);
+						}
+						break;
+			}
 		case IDLIT:	return genOperand(Node, Func);
 		case INTLIT: return genOperand(Node, Func);
+		case Array1D: return getArrayVal(Node, Func);
+		case Return : return Builder.CreateRet(genIRStat(Node->returnstat.expr, Func));
 		default: break;
 
 	}
+}
+
+Value *getArrayVal(struct ASTNode *Node, struct IRFunction *Func)
+{
+	return Builder.CreateLoad(getArrayAddress(Node, Func));	
+}
+
+Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func)
+{
+	Value *val = genIRStat(Node->array1dnode.value, Func);
+	Function::arg_iterator l, r;
+	int i=0;
+	Value *base;
+	//Checking for function parameter
+	for(l = Func->func->arg_begin(), r = Func->func->arg_end(); l!= r; l++, i++){
+		if(Func->args[i] == Node->idlit){
+			base = l;
+			break;
+		}
+	}
+	//Checking for local variable
+	for(uint i=0; i < Func->alloc.size(); i++){
+		if(Func->alloc[i].second == Node->idlit){
+			base = Func->alloc[i].first;
+			break;
+		}
+	}
+	Value *arr = Builder.CreateGEP(Builder.getInt32Ty(), base, val);
+	return arr;
 }
 
 Value *getAddress(struct ASTNode *Node, struct IRFunction *Func)
@@ -98,6 +142,7 @@ Value *genOperand(struct ASTNode *Node, struct IRFunction *Func)
 					cout << "Variable " << Node->idlit << " not defined";
 					return val;
 				}
+		case Array1D: return getArrayVal(Node, Func);
 		default: break;
 
 	}
@@ -139,8 +184,16 @@ alist allocMem(plist parameterlist, BasicBlock *bb)
 {
 	alist alloc;
 	for(uint i=0; i < parameterlist.size(); i++){
-		AllocaInst *inst = new AllocaInst(parameterlist[i].first, 0, parameterlist[i].second, bb);
-		alloc.push_back(make_pair(inst, parameterlist[i].second));
+		if(parameterlist[i].second.second == null){
+			AllocaInst *inst = new AllocaInst(parameterlist[i].first, 0, parameterlist[i].second.first, bb);
+			alloc.push_back(make_pair(inst, parameterlist[i].second.first));
+		}
+		else{
+			ConstantInt *num = dyn_cast<ConstantInt>(parameterlist[i].second.second);
+			ArrayType *arr = ArrayType::get(parameterlist[i].first, num->getSExtValue());
+			AllocaInst *inst = new AllocaInst(arr, 0, parameterlist[i].second.first, bb);
+			alloc.push_back(make_pair(inst, parameterlist[i].second.first));
+		}
 	}
 	return alloc;
 }
@@ -159,8 +212,14 @@ struct IRFunction *genIRFunction(struct ASTNode *Node)
 		parameterlist = genIRParamList(parameterlist, Node->functionnode.paramlist);
 	vector<Type *> argType;
 	for(uint i=0; i < parameterlist.size(); i++){
-		argType.push_back(parameterlist[i].first);
-		newfunc->args.push_back(parameterlist[i].second);
+		if(parameterlist[i].second.second == null)
+			argType.push_back(parameterlist[i].first);
+		else{
+			ConstantInt *num = dyn_cast<ConstantInt>(parameterlist[i].second.second);
+			ArrayType *arr = ArrayType::get(parameterlist[i].first, num->getSExtValue());
+			argType.push_back(arr->getPointerTo(0));
+		}
+		newfunc->args.push_back(parameterlist[i].second.first);
 	}
  	FunctionType *funcType = FunctionType::get(Return, argType, false);
 	Function *func = Function::Create(funcType,	Function::ExternalLinkage,
@@ -194,16 +253,16 @@ vlist genIRVarList(vlist variablelist, struct ASTNode *Node)
 	return variablelist;
 }
 
-pair<Type *, vector<string>> genIRVarDec(struct ASTNode *Node)
+pair<Type *, vector<pair<string, Value *>>> genIRVarDec(struct ASTNode *Node)
 {
-	pair<Type *, vector<string>> variablelist;
+	pair<Type *, vector<pair<string, Value*>>> variablelist;
 	variablelist = make_pair(genIRDtype(Node->varlist.type), genIRVar(Node->varlist.list));
 	return variablelist;	
 }
 
-vector<string> genIRVar(struct ASTNode *Node)
+vector<pair<string, Value *>> genIRVar(struct ASTNode *Node)
 {
-	vector<string> args;
+	vector<pair<string, Value *>> args;
 	args.push_back(genIRId(Node->vardec.left));
 	while(Node->vardec.right != NULL){
 		Node = Node->vardec.right;
@@ -221,9 +280,9 @@ plist genIRParamList(plist parameterlist, struct ASTNode *Node)
 	return parameterlist;
 }
 
-pair<Type *, string> genIRParam(struct ASTNode *Node)
+pair<Type *, pair<string, Value *>> genIRParam(struct ASTNode *Node)
 {
-	pair<Type *, string> parameter;
+	pair<Type *, pair<string, Value *>> parameter;
 	parameter = make_pair(genIRDtype(Node->param.type), genIRId(Node->param.var));
 	return parameter;
 }
@@ -234,26 +293,41 @@ Type *genIRDtype(struct ASTNode *Node)
 		return Builder.getInt32Ty();
 
 }
-string genIRId(struct ASTNode *Node)
-{
-	return Node->idlit;
+pair<string, Value *> genIRId(struct ASTNode *Node)
+{	
+	if(Node->nodetype == IDLIT)
+		return make_pair(Node->idlit, null);
+	else if(Node->nodetype == Array1D){
+		string name = Node->array1dnode.name;
+		Value *val = Builder.getInt32(Node->array1dnode.value->litval);
+		return make_pair(name, val);
+	}
 }
 
-void genIRCode(struct ASTNode *Node)
+void genIRCode(struct ASTNode *Node, int i)
 {
 	switch(Node->nodetype){
 		case Func:{
 				// plist parameterlist;
 				IRFunction *Func = genIRFunction(Node);
 				Value *last_inst = genIRStatlist(Node->functionnode.statlist, Func);
+				if(!isa<ReturnInst>(last_inst))
+					Builder.CreateRet(Builder.getInt32(10));
 				if(Func->func != NULL)
 					verifyFunction(*Func->func);
+				// free(Func);
+			}
 				break;
-		}
+		case FuncList:{
+				genIRCode(Node->functionlist.left, i+1);
+				if(Node->functionlist.right != NULL)
+					genIRCode(Node->functionlist.right, i+1);
+			}
+				break;
 		default: break;
 	}
-	ModuleOb->print(errs(), nullptr);
-
+	if(i==0)
+		ModuleOb->print(errs(), nullptr);
 }
 
 

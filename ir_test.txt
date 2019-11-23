@@ -1,5 +1,14 @@
-int fname(int a, int b, int c){
-	int d, e;
-	d = a*(b/1)+711;
-	e = a-d+1;
+int fname(int a, int b, int c, int z[10]){
+	int d, e, f[100];
+	e += not(e-d+1);
+	d *= e;
+	c = f[(e+d)/2] + f[23+23*3];
+	f[12] = f[23] + f[19];
+	return f;
+}
+
+int main(int c){
+	int a;
+	a = c;
+	return a;
 }

@@ -59,19 +59,19 @@ extern int yydebug;
     ROP = 269,
     STRING = 270,
     RDOP = 271,
-    SOP = 272,
-    MOP = 273,
-    AOP = 274,
-    AND = 275,
-    OR = 276,
-    NOT = 277,
-    TRUE = 278,
-    FALSE = 279,
-    EQUAL = 280,
-    BREAK = 281,
-    RETURN = 282,
-    IN = 283,
-    OUT = 284,
+    AOP = 272,
+    AND = 273,
+    OR = 274,
+    NOT = 275,
+    TRUE = 276,
+    FALSE = 277,
+    EQUAL = 278,
+    BREAK = 279,
+    RETURN = 280,
+    IN = 281,
+    OUT = 282,
+    SOP = 283,
+    MOP = 284,
     NUMBER = 285
   };
 #endif
@@ -81,10 +81,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 10 "parser.y" /* yacc.c:1909  */
+#line 13 "parser.y" /* yacc.c:1909  */
 
-  char *text;
   struct ASTNode *node;
+  string *text;
   int number;
 
 #line 91 "parser.tab.h" /* yacc.c:1909  */

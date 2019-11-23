@@ -1,84 +1,90 @@
+#include <string>
+using namespace std;
 
+extern void printIR(struct ASTNode *node);
 typedef enum  astnodetype {BinaryOp, UnaryOp, TernaryOp, StringOp, 
-							Array1D, Array2D, Function, INTLIT, 
+							Array1D, Array2D, Func, FuncList, INTLIT, 
 							BOOLLIT, IDLIT, While, For, If, Input, 
 							InputList, Output, OutputList, Vardec, 
 							Varlist, Dtype, Statement, Param, ParamList,
 							VarDecList, FunCall, ArgList, Return} ASTNodeType;
 typedef enum  binaryoptype {ASSIGN, SUMOP, RELOP, RELDOP, DASSIGN, MULOP, ANDOP, OROP, NOTOP} BinaryOpType; 
 
-extern struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
+extern  struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
 									struct ASTNode *right,
 									BinaryOpType optype,
-									char *operator);
+									string *op);
 
-extern struct ASTNode *getASTNodeStringOp(struct ASTNode *operand, 
-									char *string);
+extern  struct ASTNode *getASTNodeStringOp(struct ASTNode *operand, 
+									string *str);
 
-extern struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
+extern  struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
 										struct ASTNode *varlist,
 										struct ASTNode *statlist);
-extern struct ASTNode *getASTNodeFor(struct ASTNode *init,
+extern  struct ASTNode *getASTNodeFor(struct ASTNode *init,
 									struct ASTNode *condition, 
 									struct ASTNode *update,
 									struct ASTNode *varlist,
 									struct ASTNode *statlist);
-extern struct ASTNode *getASTNodeReturn(struct ASTNode *expr);
+extern  struct ASTNode *getASTNodeReturn(struct ASTNode *expr);
 
-extern struct ASTNode *getASTNodeFunCall(char *name,
+extern  struct ASTNode *getASTNodeFunCall(string *name,
 										struct ASTNode *varlist);
-extern struct ASTNode *getASTNodeArg(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeArg(struct ASTNode *left,
 									struct ASTNode *right);
 
-extern struct ASTNode *getASTNodeIf(struct ASTNode *condition,
+extern  struct ASTNode *getASTNodeIf(struct ASTNode *condition,
 									struct ASTNode *ifvar,
 									struct ASTNode *ifstat,
 									struct ASTNode *elsevar,
 									struct ASTNode *elsestat);
 
-extern struct ASTNode *getASTNodeUnaryOp(struct ASTNode *operand, 
+extern  struct ASTNode *getASTNodeUnaryOp(struct ASTNode *operand, 
 									BinaryOpType optype,
-									char *operator);
+									string *op);
 
-extern struct ASTNode *getASTNodeTernaryOp(struct ASTNode *first, 
+extern  struct ASTNode *getASTNodeTernaryOp(struct ASTNode *first, 
 									struct ASTNode *second,
 									struct ASTNode *third);
-extern struct ASTNode *getASTNodeInputStat(struct ASTNode *statlist);
-extern struct ASTNode *getASTNodeInputList(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeInputStat(struct ASTNode *statlist);
+extern  struct ASTNode *getASTNodeInputList(struct ASTNode *left,
 										struct ASTNode *right);
 
-extern struct ASTNode *getASTNodeOutputStat(struct ASTNode *statlist);
-extern struct ASTNode *getASTNodeOutputList(struct ASTNode *left,
-										char *str,
+extern  struct ASTNode *getASTNodeOutputStat(struct ASTNode *statlist);
+extern  struct ASTNode *getASTNodeOutputList(struct ASTNode *left,
+										string *str,
 										struct ASTNode *right);
 
-extern struct ASTNode *getASTNodeVardec(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeVardec(struct ASTNode *left,
 										struct ASTNode *right);
-extern struct ASTNode *getASTNodeVarList(struct ASTNode *str,
+extern  struct ASTNode *getASTNodeVarList(struct ASTNode *str,
 										struct ASTNode *list);
-extern struct ASTNode *getASTNodeDType(char *type);
-extern struct ASTNode *getASTNodeStat(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeDType(string *type);
+extern  struct ASTNode *getASTNodeStat(struct ASTNode *left,
 										struct ASTNode *right);
-extern struct ASTNode *getASTNodeParamList(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeParamList(struct ASTNode *left,
 										struct ASTNode *right);
-extern struct ASTNode *getASTNodeVarDecList(struct ASTNode *left,
+extern  struct ASTNode *getASTNodeVarDecList(struct ASTNode *left,
 										struct ASTNode *right);
 
-extern struct ASTNode *getASTNodeParam(struct ASTNode *type,
+extern  struct ASTNode *getASTNodeParam(struct ASTNode *type,
 										struct ASTNode *var);
 
-extern struct ASTNode *getASTNodeFunction(struct ASTNode *type,
-										char *name,
+extern	struct ASTNode *getASTNodeFuncList(struct ASTNode *left,
+										struct ASTNode *right);
+
+extern  struct ASTNode *getASTNodeFunction(struct ASTNode *type,
+										string *name,
 										struct ASTNode *paramlist,
 										struct ASTNode *varlist,
 										struct ASTNode *statlist);
 
-extern struct ASTNode *getASTNodeIntLiteral(int litval);
-extern struct ASTNode *getASTNodeBoolLiteral(char *litval);
-extern struct ASTNode *getASTNodeIDLiteral(char *litval);
-extern struct ASTNode *getASTNode1DArray(char *name,
+extern  struct ASTNode *getASTNodeIntLiteral(int litval);
+extern  struct ASTNode *getASTNodeBoolLiteral(string *litval);
+extern  struct ASTNode *getASTNodeIDLiteral(string *litval);
+extern  struct ASTNode *getASTNode1DArray(string *name,
 									struct ASTNode *value);
-extern struct ASTNode *getASTNode2DArray(char *name,
+extern  struct ASTNode *getASTNode2DArray(string * name,
 									struct ASTNode *value1, 
 									struct ASTNode *value2);
 
@@ -87,39 +93,44 @@ struct ASTNode {
 
 	union {
 	
-		struct ASTExprBinOp {
+		struct {
 			BinaryOpType optype; 
 			struct ASTNode *left;
 			struct ASTNode *right;
-			char *operator; 
+			string op; 
 		} binarynode;	
 
-		struct ASTExprUnOp {
+		struct {
 			BinaryOpType optype; 
 			struct ASTNode *operand;
-			char *operator; 
+			string op; 
 		} unarynode;	
 
-		struct ASTExprStrOp {
+		struct {
 			struct ASTNode *operand;
-			char *string; 
+			string str; 
 		} stringnode;	
 
-		struct ASTFunction {
-			char *name; 
+		struct {
+			string name; 
 			struct ASTNode *type;
 			struct ASTNode *paramlist;
 			struct ASTNode *statlist;
 			struct ASTNode *varlist;
 		} functionnode;	
 
-		struct ASTWhile {
+		struct{
+			struct ASTNode *left;
+			struct ASTNode *right;
+		} functionlist;
+
+		struct {
 			struct ASTNode *condition;
 			struct ASTNode *varlist;
 			struct ASTNode *statlist;
 		} whilenode;
 
-		struct ASTFor {
+		struct {
 			struct ASTNode *init;
 			struct ASTNode *condition;
 			struct ASTNode *update;
@@ -127,7 +138,7 @@ struct ASTNode {
 			struct ASTNode *statlist;
 		} fornode;
 		
-		struct ASTIf{
+		struct {
 			struct ASTNode *condition;
 			struct ASTNode *ifvar;
 			struct ASTNode *ifstat;
@@ -135,91 +146,91 @@ struct ASTNode {
 			struct ASTNode *elsestat;
 		}ifnode;
 
-		struct ASTExpr1DArray {
-			char *name; 
+		struct {
+			string name; 
 			struct ASTNode *value;
 		} array1dnode;	
 
-		struct ASTExpr2DArray {
-			char *name; 
+		struct {
+			string name; 
 			struct ASTNode *value1;
 			struct ASTNode *value2;
 		} array2dnode;	
 
-		struct ASTExprTernaryOp {
+		struct {
 			struct ASTNode *first;
 			struct ASTNode *second;
 			struct ASTNode *third; 
 		} ternarynode;	
 
-		struct ASTReturnStat{
+		struct {
 			struct ASTNode *expr;
 		} returnstat;
 
-		struct ASTInputStat{
+		struct {
 			struct ASTNode *list;
 		} inputstat;
 
-		struct ASTInputList{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} inputlist;
 
-		struct ASTOutputStat{
+		struct {
 			struct ASTNode *list;
 		} outputstat;
 
-		struct ASTOutputList{
+		struct {
 			struct ASTNode *left;
-			char *str;
+			string str;
 			struct ASTNode *right;
 		} outputlist;
 
-		struct ASTVardec{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} vardec;
 
-		struct ASTVardecList{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} vardeclist;
 		
-		struct ASTStat{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
-		} statment;
+		} statement;
 		
-		struct ASTVarlist{
+		struct {
 			struct ASTNode *type;
 			struct ASTNode *list;
 		} varlist;
 		
-		struct ASTParam{
+		struct {
 			struct ASTNode *type;
 			struct ASTNode *var;
 		} param;
 
-		struct ASTParamlist{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} paramlist;
 
-		struct ASTArg{
+		struct {
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} arg;
 
-		struct ASTFunCall{
-			char *name;
+		struct {
+			string name;
 			struct ASTNode *arglist;
 		} funcall;
 
 		int litval;
 		union{
-			char *boollit;
-			char *idlit;
-			char *dtype;
+			string boollit;
+			string idlit;
+			string dtype;
 		};
 	};
 

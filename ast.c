@@ -1,63 +1,63 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ast.h"
+#include "ir_gen.h"
 
 struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
 									struct ASTNode *right, 
 									BinaryOpType optype,
-									char *operator)
+									string *op)
 {
 	struct ASTNode *node; 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
-	// printf("%s\n", operator);
+	// printf("%s\n", op->c_str());
 	node->nodetype = BinaryOp;
 	node->binarynode.left = left;
 	node->binarynode.right = right;
 	node->binarynode.optype = optype;
-	node->binarynode.operator = operator;
-
+	node->binarynode.op = *op;
+	// genIRBinOp(node);
 	return node;
 }
 
 struct ASTNode *getASTNodeUnaryOp(struct ASTNode *operand, 
 									BinaryOpType optype,
-									char *operator)
+									string *op)
 {
 	struct ASTNode *node; 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = UnaryOp;
 	node->unarynode.operand = operand;
 	node->unarynode.optype = optype;
-	node->unarynode.operator = operator;
+	node->unarynode.op = *op;
 
 	return node;
 }
 
 struct ASTNode *getASTNodeStringOp(struct ASTNode *operand, 
-									char *string)
+									string *str)
 {
 	struct ASTNode *node; 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = StringOp;
 	node->stringnode.operand = operand;
-	node->stringnode.string = string;
+	node->stringnode.str = *str;
 
 	return node;
 }
 
-struct ASTNode *getASTNode1DArray(char *name,
+struct ASTNode *getASTNode1DArray(string *name,
 							 struct ASTNode *value)
 {
 	struct ASTNode *node; 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = Array1D;
 	node->array1dnode.value = value;
-	node->array1dnode.name = name;
+	node->array1dnode.name = *name;
 
 	return node;
 }
 
-struct ASTNode *getASTNode2DArray(char *name,
+struct ASTNode *getASTNode2DArray(string *name,
 							 struct ASTNode *value1,
 							 struct ASTNode *value2)
 {
@@ -66,7 +66,7 @@ struct ASTNode *getASTNode2DArray(char *name,
 	node->nodetype = Array2D;
 	node->array2dnode.value1 = value1;
 	node->array2dnode.value2 = value2;
-	node->array2dnode.name = name;
+	node->array2dnode.name = *name;
 
 	return node;
 }
@@ -97,13 +97,13 @@ struct ASTNode *getASTNodeIntLiteral(int litval)
 	return node;
 }
 
-struct ASTNode *getASTNodeBoolLiteral(char *litval)
+struct ASTNode *getASTNodeBoolLiteral(string *litval)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = BOOLLIT;
-	node->boollit = litval;
+	node->boollit = *litval;
 
 	return node;
 }
@@ -160,8 +160,24 @@ struct ASTNode *getASTNodeFor(struct ASTNode *init,
 	return node;
 }
 
+struct ASTNode *getASTNodeFuncList(struct ASTNode *left,
+								struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = FuncList;
+	node->functionlist.left = left;
+	node->functionlist.right = right;
+	// genIRCode(node);
+	// if(node->functionlist.right != NULL)
+	// 	genIRCode(node->functionlist.right);
+
+	return node;
+}
+
 struct ASTNode *getASTNodeFunction(struct ASTNode *type,
-								char *name,
+								string *name,
 								struct ASTNode *paramlist,
 								struct ASTNode *varlist,
 								struct ASTNode *statlist)
@@ -169,13 +185,12 @@ struct ASTNode *getASTNodeFunction(struct ASTNode *type,
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
-	node->nodetype = Function;
-	node->functionnode.name = name;
+	node->nodetype = Func;
+	node->functionnode.name = *name;
 	node->functionnode.type = type;
 	node->functionnode.paramlist = paramlist;
 	node->functionnode.varlist = varlist;
 	node->functionnode.statlist = statlist;
-
 	return node;
 }
 
@@ -215,7 +230,7 @@ struct ASTNode *getASTNodeOutputStat(struct ASTNode *statlist)
 }
 
 struct ASTNode *getASTNodeOutputList(struct ASTNode *left,
-									char *str,
+									string *str,
 									struct ASTNode *right)
 {
 	struct ASTNode *node; 
@@ -223,7 +238,7 @@ struct ASTNode *getASTNodeOutputList(struct ASTNode *left,
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = OutputList;
 	node->outputlist.left = left;
-	node->outputlist.str = str;
+	node->outputlist.str = *str;
 	node->outputlist.right = right;
 
 	return node;
@@ -241,18 +256,6 @@ struct ASTNode *getASTNodeVarDecList(struct ASTNode *left,
 	return node;
 }
 
-struct ASTNode *getASTNodeVardec(struct ASTNode *left,
-									struct ASTNode *right)
-{
-	struct ASTNode *node; 
-
-	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
-	node->nodetype = Vardec;
-	node->vardec.left = left;
-	node->vardec.right = right;
-	return node;
-}
-
 struct ASTNode *getASTNodeVarList(struct ASTNode *type,
 									struct ASTNode *list)
 {
@@ -265,6 +268,18 @@ struct ASTNode *getASTNodeVarList(struct ASTNode *type,
 	return node;
 }
 
+struct ASTNode *getASTNodeVardec(struct ASTNode *left,
+									struct ASTNode *right)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = Vardec;
+	node->vardec.left = left;
+	node->vardec.right = right;
+	return node;
+}
+
 struct ASTNode *getASTNodeStat(struct ASTNode *left,
 									struct ASTNode *right)
 {
@@ -272,8 +287,8 @@ struct ASTNode *getASTNodeStat(struct ASTNode *left,
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = Statement;
-	node->statment.left = left;
-	node->statment.right = right;
+	node->statement.left = left;
+	node->statement.right = right;
 	return node;
 }
 
@@ -311,14 +326,14 @@ struct ASTNode *getASTNodeReturn(struct ASTNode *expr)
 	return node;
 }
 
-struct ASTNode *getASTNodeFunCall(char *name,
+struct ASTNode *getASTNodeFunCall(string *name,
 							struct ASTNode *arglist)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = FunCall;
-	node->funcall.name = name;
+	node->funcall.name = *name;
 	node->funcall.arglist = arglist;
 	return node;
 }
@@ -335,25 +350,33 @@ struct ASTNode *getASTNodeArg(struct ASTNode *left,
 	return node;
 }
 
-struct ASTNode *getASTNodeDType(char *type)
+struct ASTNode *getASTNodeDType(string *type)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = Dtype;
-	node->dtype = type;
+	node->dtype = *type;
 	// printf("%s", node->dtype);
 	return node;
 }
 
-struct ASTNode *getASTNodeIDLiteral(char *litval)
+struct ASTNode *getASTNodeIDLiteral(string *litval)
 {
 	struct ASTNode *node; 
 
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = IDLIT;
-	node->idlit = litval;
+	node->idlit = *litval;
 
 	return node;
 }
 
+void printIR(struct ASTNode *node)
+{
+	printf("------------------------\n");
+	printf("LLVM IR Code generated :-\n");
+	printf("------------------------\n");
+	genIRCode(node, 0);
+
+}

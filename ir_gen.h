@@ -6,30 +6,36 @@
 #include "llvm/IR/Constants.h"
 #include <vector>
 #include "ast.h"
-#define plist vector<pair<Type *, string>>
-#define vlist vector<pair<Type *, vector<string>>>
+#define plist vector<pair<Type *, pair<string, Value *>>>
+#define vlist vector<pair<Type *, vector<pair<string, Value *>>>>
 #define alist vector<pair<AllocaInst *, string>>
 #define null (Value *)Constant::getNullValue
 using namespace llvm;
 using namespace std;
 
-extern void genIRCode(struct ASTNode *Node);
+static LLVMContext Context;
+static IRBuilder<> Builder(Context);
+static Module *ModuleOb = new Module("IR Generator", Context);
+
+extern void genIRCode(struct ASTNode *Node, int i);
 void genIRBinOp(struct ASTNode *Node);
 void setFuncArgs(Function *func, vector<string> args);
 struct IRFunction *genIRFunction(struct ASTNode *Node);
 plist genIRParamList(plist parameterlist, struct ASTNode *Node);
-pair<Type *, string> genIRParam(struct ASTNode *Node);
+pair<Type *, pair<string, Value *>> genIRParam(struct ASTNode *Node);
 Type *genIRDtype(struct ASTNode *Node);
-string genIRId(struct ASTNode *Node);
+pair<string, Value *> genIRId(struct ASTNode *Node);
 Value *genIRStatlist(struct ASTNode *Node, struct IRFunction *Func);
-pair<Type *, vector<string>> genIRVarDec(struct ASTNode *Node);
-vector<string> genIRVar(struct ASTNode *Node);
+pair<Type *, vector<pair<string, Value *>>> genIRVarDec(struct ASTNode *Node);
+vector<pair<string, Value *>> genIRVar(struct ASTNode *Node);
 Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func);
 Value *arithOp(Value *left, Value *right, string op);
 Value *genOperand(struct ASTNode *Node, struct IRFunction *Func);
 Value *getIdVal(string id, struct IRFunction *Func);
 vlist genIRVarList(vlist variablelist, struct ASTNode *Node);
 Value *getAddress(struct ASTNode *Node, struct IRFunction *Func);
+Value *getArrayVal(struct ASTNode *Node, struct IRFunction *Func);
+Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func);
 
 struct IRFunction{
 	Function *func;
