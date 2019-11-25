@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ir_gen.h"
+// #include "ast.h"
+// #include "ir_gen.h"
+#include "ast_inter.h"
 
 struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
 									struct ASTNode *right, 
@@ -97,6 +99,16 @@ struct ASTNode *getASTNodeIntLiteral(int litval)
 	return node;
 }
 
+struct ASTNode *getASTNodeFloatLiteral(float litval)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = FLT_LIT;
+	node->flt_litval = litval;
+	return node;
+}
+
 struct ASTNode *getASTNodeBoolLiteral(string *litval)
 {
 	struct ASTNode *node; 
@@ -109,7 +121,6 @@ struct ASTNode *getASTNodeBoolLiteral(string *litval)
 }
 
 struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
-							struct ASTNode *varlist,
 							struct ASTNode *statlist)
 {
 	struct ASTNode *node; 
@@ -117,16 +128,13 @@ struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = While;
 	node->whilenode.condition = condition;
-	node->whilenode.varlist = varlist;
 	node->whilenode.statlist = statlist;
 
 	return node;
 }
 
 struct ASTNode *getASTNodeIf(struct ASTNode *condition,
-							struct ASTNode *ifvar,
 							struct ASTNode *ifstat,
-							struct ASTNode *elsevar,
 							struct ASTNode *elsestat)
 {
 	struct ASTNode *node; 
@@ -134,9 +142,7 @@ struct ASTNode *getASTNodeIf(struct ASTNode *condition,
 	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
 	node->nodetype = If;
 	node->ifnode.condition = condition;
-	node->ifnode.ifvar = ifvar;
 	node->ifnode.ifstat = ifstat;
-	node->ifnode.elsevar = elsevar;
 	node->ifnode.elsestat = elsestat;
 	return node;
 }
@@ -144,7 +150,6 @@ struct ASTNode *getASTNodeIf(struct ASTNode *condition,
 struct ASTNode *getASTNodeFor(struct ASTNode *init,
 							struct ASTNode *condition,
 							struct ASTNode *update,
-							struct ASTNode *varlist,
 							struct ASTNode *statlist)
 {
 	struct ASTNode *node; 
@@ -154,8 +159,20 @@ struct ASTNode *getASTNodeFor(struct ASTNode *init,
 	node->fornode.init = init;
 	node->fornode.condition = condition;
 	node->fornode.update = update;
-	node->fornode.varlist = varlist;
 	node->fornode.statlist = statlist;
+
+	return node;
+}
+
+struct ASTNode *getASTNodeDecList(struct ASTNode *global,
+								struct ASTNode *funclist)
+{
+	struct ASTNode *node; 
+
+	node = (struct ASTNode *) malloc(sizeof(struct ASTNode));
+	node->nodetype = DecList;
+	node->declist.global = global;
+	node->declist.funclist = funclist;
 
 	return node;
 }
@@ -372,11 +389,16 @@ struct ASTNode *getASTNodeIDLiteral(string *litval)
 	return node;
 }
 
-void printIR(struct ASTNode *node)
-{
-	printf("------------------------\n");
-	printf("LLVM IR Code generated :-\n");
-	printf("------------------------\n");
-	genIRCode(node, 0);
+// void printIR(struct ASTNode *node)
+// {
+// 	printf("------------------------\n");
+// 	printf("LLVM IR Code generated :-\n");
+// 	printf("------------------------\n");
+// 	genIRCode(node, 0);
 
+// }
+
+void interpreter(struct ASTNode *node)
+{
+	interpret(node);
 }

@@ -1,13 +1,16 @@
 #include <string>
+// #include "ir_gen.h"
+// #include "ast_inter.h"
 using namespace std;
 
-extern void printIR(struct ASTNode *node);
+// extern void printIR(struct ASTNode *node);
+extern void interpreter(struct ASTNode *node);
 typedef enum  astnodetype {BinaryOp, UnaryOp, TernaryOp, StringOp, 
 							Array1D, Array2D, Func, FuncList, INTLIT, 
-							BOOLLIT, IDLIT, While, For, If, Input, 
-							InputList, Output, OutputList, Vardec, 
+							BOOLLIT, IDLIT, FLT_LIT, While, For, If,  
+							InputList, Output, OutputList, Vardec, Input,
 							Varlist, Dtype, Statement, Param, ParamList,
-							VarDecList, FunCall, ArgList, Return} ASTNodeType;
+							VarDecList, DecList, FunCall, ArgList, Return} ASTNodeType;
 typedef enum  binaryoptype {ASSIGN, SUMOP, RELOP, RELDOP, DASSIGN, MULOP, ANDOP, OROP, NOTOP} BinaryOpType; 
 
 extern  struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
@@ -18,13 +21,14 @@ extern  struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left,
 extern  struct ASTNode *getASTNodeStringOp(struct ASTNode *operand, 
 									string *str);
 
+extern  struct ASTNode *getASTNodeDecList(struct ASTNode *global,
+										struct ASTNode *funclist);
+
 extern  struct ASTNode *getASTNodeWhile(struct ASTNode *condition,
-										struct ASTNode *varlist,
 										struct ASTNode *statlist);
 extern  struct ASTNode *getASTNodeFor(struct ASTNode *init,
 									struct ASTNode *condition, 
 									struct ASTNode *update,
-									struct ASTNode *varlist,
 									struct ASTNode *statlist);
 extern  struct ASTNode *getASTNodeReturn(struct ASTNode *expr);
 
@@ -34,9 +38,7 @@ extern  struct ASTNode *getASTNodeArg(struct ASTNode *left,
 									struct ASTNode *right);
 
 extern  struct ASTNode *getASTNodeIf(struct ASTNode *condition,
-									struct ASTNode *ifvar,
 									struct ASTNode *ifstat,
-									struct ASTNode *elsevar,
 									struct ASTNode *elsestat);
 
 extern  struct ASTNode *getASTNodeUnaryOp(struct ASTNode *operand, 
@@ -80,6 +82,7 @@ extern  struct ASTNode *getASTNodeFunction(struct ASTNode *type,
 										struct ASTNode *statlist);
 
 extern  struct ASTNode *getASTNodeIntLiteral(int litval);
+extern  struct ASTNode *getASTNodeFloatLiteral(float litval);
 extern  struct ASTNode *getASTNodeBoolLiteral(string *litval);
 extern  struct ASTNode *getASTNodeIDLiteral(string *litval);
 extern  struct ASTNode *getASTNode1DArray(string *name,
@@ -120,13 +123,17 @@ struct ASTNode {
 		} functionnode;	
 
 		struct{
+			struct ASTNode *global;
+			struct ASTNode *funclist;
+		} declist;
+
+		struct{
 			struct ASTNode *left;
 			struct ASTNode *right;
 		} functionlist;
 
 		struct {
 			struct ASTNode *condition;
-			struct ASTNode *varlist;
 			struct ASTNode *statlist;
 		} whilenode;
 
@@ -134,15 +141,12 @@ struct ASTNode {
 			struct ASTNode *init;
 			struct ASTNode *condition;
 			struct ASTNode *update;
-			struct ASTNode *varlist;
 			struct ASTNode *statlist;
 		} fornode;
 		
 		struct {
 			struct ASTNode *condition;
-			struct ASTNode *ifvar;
 			struct ASTNode *ifstat;
-			struct ASTNode *elsevar;
 			struct ASTNode *elsestat;
 		}ifnode;
 
@@ -226,7 +230,10 @@ struct ASTNode {
 			struct ASTNode *arglist;
 		} funcall;
 
-		int litval;
+		union{
+			int litval;
+			float flt_litval;
+		};
 		union{
 			string boollit;
 			string idlit;

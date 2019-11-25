@@ -1,0 +1,32 @@
+int main(){
+	int a, b;
+	a = 1;
+	a *= 5;
+	b = a + 5;
+	if(a < 5){
+		b = 12;
+	}
+	else{
+		b = 23;
+	}
+	for(a=1; a < 10; a+=1){
+		b += 1;
+	}
+	while(b < 100){
+		b += 1;
+	}
+	print << b << (a+b)/2;
+	return b;
+}
+
+int next()
+{
+	int c, d;
+	return c;
+}
+
+int new()
+{
+	int e, f;
+	return e;
+}

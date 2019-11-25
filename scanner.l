@@ -19,6 +19,7 @@ int					{yylval.text = new string("int"); return INT;}
 char				{yylval.text = new string("char"); return CHAR;}
 bool				{yylval.text = new string("bool"); return BOOL;}
 void				{yylval.text = new string("void"); return VOID;}
+float				{yylval.text = new string("float"); return FLOAT;}
 True				{yylval.text = new string("True"); return TRUE;}
 False				{yylval.text = new string("False"); return FALSE;}
 if 					{yylval.text = new string("if"); return IF;}
@@ -42,6 +43,7 @@ return 				{yylval.text = new string("return"); return RETURN;}
 [<][<]				{yylval.text = new string(strdup(yytext)); return OUT;}
 [a-zA-Z][a-zA-Z0-9_]* 	{yylval.text = new string(strdup(yytext));return ID;}
 [0-9]+				{yylval.number = atoi(yytext); return NUMBER;}
+[0-9]+[.][0-9]+		{yylval.flt = atof(yytext); return FLT_NUM;}
 \n					{}
 ;					{return ';';}
 [?]					{return '?';}

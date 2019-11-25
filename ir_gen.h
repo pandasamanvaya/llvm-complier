@@ -4,6 +4,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/ADT/StringRef.h"
 #include <vector>
 #include "ast.h"
 #define plist vector<pair<Type *, pair<string, Value *>>>
@@ -36,6 +37,7 @@ vlist genIRVarList(vlist variablelist, struct ASTNode *Node);
 Value *getAddress(struct ASTNode *Node, struct IRFunction *Func);
 Value *getArrayVal(struct ASTNode *Node, struct IRFunction *Func);
 Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func);
+BasicBlock *createBB(Function *func, string name);
 
 struct IRFunction{
 	Function *func;

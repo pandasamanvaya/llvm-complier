@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+// #include "ast_inter.h"
+
 
 void printAST(struct ASTNode *root)
 {	
@@ -118,12 +120,22 @@ void printAST(struct ASTNode *root)
 							printAST(root->functionlist.right);
 					}
 						break;
+		case DecList:{
+						if(root->declist.global != NULL)
+							printAST(root->declist.global);
+						printAST(root->declist.funclist);
+					}
+						break;
 		case Dtype:	{
 					printf("%s ", root->dtype.c_str());
 					}
 					break;
 		case INTLIT:{ 
 					printf("%d", root->litval);
+					}
+					break;
+		case FLT_LIT:{
+					printf("%f", root->flt_litval);
 					}
 					break;
 		case BOOLLIT: {
@@ -138,8 +150,6 @@ void printAST(struct ASTNode *root)
 					printf("while(");
 					printAST(root->whilenode.condition);
 					printf("){\n");
-					if(root->whilenode.varlist != NULL)
-						printAST(root->whilenode.varlist);
 					printAST(root->whilenode.statlist);
 					printf("}");
 					}
@@ -152,8 +162,6 @@ void printAST(struct ASTNode *root)
 					printf("; ");
 					printAST(root->fornode.update);
 					printf("){\n");
-					if(root->fornode.varlist != NULL)
-						printAST(root->fornode.varlist);
 					printAST(root->fornode.statlist);
 					printf("}");
 					}
@@ -162,14 +170,10 @@ void printAST(struct ASTNode *root)
 					printf("if ("); 
 				printAST(root->ifnode.condition);
 				printf("){\n");
-				if(root->ifnode.ifvar != NULL)
-					printAST(root->ifnode.ifvar);
 				printAST(root->ifnode.ifstat);
 				printf("}");
 				if(root->ifnode.elsestat != NULL){
-					printf("else{\n");
-					if(root->ifnode.elsevar != NULL) 
-						printAST(root->ifnode.elsevar);
+					printf("\nelse{\n");
 					printAST(root->ifnode.elsestat);
 					printf("}");
 				}

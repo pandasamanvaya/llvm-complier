@@ -1,14 +1,20 @@
-int fname(int a, int b, int c, int z[10]){
-	int d, e, f[100];
-	e += not(e-d+1);
-	d *= e;
-	c = f[(e+d)/2] + f[23+23*3];
-	f[12] = f[23] + f[19];
-	return f;
-}
-
-int main(int c){
-	int a;
-	a = c;
-	return a;
+float main(float c){
+	int a, b, i, d[10];
+	if(a>c){
+		a += 1;
+		a = c;
+	}
+	else{
+		c = 6.789;
+		b += 1;
+	}
+	c = a+b;
+	for(i=0; i < 10; i+=1){
+		a += 1;
+	}
+	c = a+1;
+	while(c < 100){
+		c+=1;
+	}
+	return c;
 }

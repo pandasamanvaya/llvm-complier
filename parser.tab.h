@@ -58,21 +58,23 @@ extern int yydebug;
     PRINT = 268,
     ROP = 269,
     STRING = 270,
-    RDOP = 271,
-    AOP = 272,
-    AND = 273,
-    OR = 274,
-    NOT = 275,
-    TRUE = 276,
-    FALSE = 277,
-    EQUAL = 278,
-    BREAK = 279,
-    RETURN = 280,
-    IN = 281,
-    OUT = 282,
-    SOP = 283,
-    MOP = 284,
-    NUMBER = 285
+    FLOAT = 271,
+    RDOP = 272,
+    AOP = 273,
+    AND = 274,
+    OR = 275,
+    NOT = 276,
+    TRUE = 277,
+    FALSE = 278,
+    EQUAL = 279,
+    BREAK = 280,
+    RETURN = 281,
+    IN = 282,
+    OUT = 283,
+    SOP = 284,
+    MOP = 285,
+    NUMBER = 286,
+    FLT_NUM = 287
   };
 #endif
 
@@ -81,13 +83,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 13 "parser.y" /* yacc.c:1909  */
+#line 14 "parser.y" /* yacc.c:1909  */
 
   struct ASTNode *node;
   string *text;
   int number;
+  float flt;
 
-#line 91 "parser.tab.h" /* yacc.c:1909  */
+#line 94 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

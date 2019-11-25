@@ -1,7 +1,7 @@
 #include "ir_gen.h"
 #include <iostream>
 
-vector<plist> variables;
+vector<pair<GlobalVariable *, string>> globlist;
 
 // void genIRBinOp(struct ASTNode *Node)
 // {
@@ -14,6 +14,7 @@ Value *arithOp(Value *left, Value *right, string op)
 	else if (op == "*" || op == "*=") return Builder.CreateMul(left, right, "mul");
 	else if (op == "/" || op == "/=") return Builder.CreateSDiv(left, right, "div");
 	else if (op == "%" || op == "%=") return Builder.CreateSRem(left, right, "rem");
+	return null;
 }
 
 Value *genIRStatlist(struct ASTNode *Node, struct IRFunction *Func)
@@ -24,44 +25,64 @@ Value *genIRStatlist(struct ASTNode *Node, struct IRFunction *Func)
 	return val;
 }
 
+Value *relOp(Value *left, Value *right, string op)
+{
+	if(op == ">")		return Builder.CreateICmpUGT(left, right, "gt");
+	else if(op == ">=")	return Builder.CreateICmpUGE(left, right, "ge");
+	else if(op == "<")	return Builder.CreateICmpULT(left, right, "lt");
+	else if(op == "<=")	return Builder.CreateICmpULE(left, right, "le");
+	else if(op == "==")	return Builder.CreateICmpEQ(left, right, "eq");
+	else if(op == "!=")	return Builder.CreateICmpNE(left, right, "ne");
+	return null;
+}
+
 Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 {
 	switch(Node->nodetype){
 		case BinaryOp:{
 			switch(Node->binarynode.optype){
-				case SUMOP: {
-							Value *left = genIRStat(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							return arithOp(left, right, Node->binarynode.op);
-						}
-				case MULOP: {
-							Value *left = genIRStat(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							return arithOp(left, right, Node->binarynode.op);
-						}
+				case SUMOP:{
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return arithOp(left, right, Node->binarynode.op);
+					}
+				case MULOP:{
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return arithOp(left, right, Node->binarynode.op);
+					}
 				case ASSIGN:{
-							Value *left = getAddress(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							return Builder.CreateStore(right, left);
-						}
+						Value *leftop = getAddress(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return Builder.CreateAlignedStore(right, leftop, sizeof(leftop));;
+					}
 				case DASSIGN:{
-							Value *leftop = getAddress(Node->binarynode.left, Func);
-							Value *left = genOperand(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							left = arithOp(left, right, Node->binarynode.op);
-							return Builder.CreateStore(left, leftop);
-						}
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						Value *leftop = getAddress(Node->binarynode.left, Func);
+						left = arithOp(left, right, Node->binarynode.op);
+						return Builder.CreateAlignedStore(left, leftop, sizeof(leftop));
+					}
 				case ANDOP:{
-							Value *left = genIRStat(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							return Builder.CreateAnd(left, right);
-						}
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return Builder.CreateAnd(left, right);
+					}
 				case OROP:{
-							Value *left = genIRStat(Node->binarynode.left, Func);
-							Value *right = genIRStat(Node->binarynode.right, Func);
-							return Builder.CreateOr(left, right);
-						}
-
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return Builder.CreateOr(left, right);
+					}
+				case RELOP:{
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return relOp(left, right, Node->binarynode.op);	
+					}
+				case RELDOP:{
+						Value *left = genIRStat(Node->binarynode.left, Func);
+						Value *right = genIRStat(Node->binarynode.right, Func);
+						return relOp(left, right, Node->binarynode.op);
+					}
 				default: break;
 
 				}
@@ -74,18 +95,71 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 						}
 						break;
 			}
-		case IDLIT:	return genOperand(Node, Func);
+		case TernaryOp:{
+					
+			}
+		case IDLIT:	{return genOperand(Node, Func);}
 		case INTLIT: return genOperand(Node, Func);
+		case FLT_LIT: return genOperand(Node, Func);
 		case Array1D: return getArrayVal(Node, Func);
 		case Return : return Builder.CreateRet(genIRStat(Node->returnstat.expr, Func));
+		case If:{
+				Value *cond = genIRStat(Node->ifnode.condition, Func);
+				// Value *Condtn = Builder.CreateICmpNE(cond,Builder.getInt32(0));
+				BasicBlock *If = createBB(Func->func, "If");
+				BasicBlock *Else = createBB(Func->func, "Else");
+				BasicBlock *Merge = createBB(Func->func, "Merge");
+				Builder.CreateCondBr(cond, If, Else);
+
+				Builder.SetInsertPoint(If);
+				Value *IfVal = genIRStatlist(Node->ifnode.ifstat, Func); 
+				Builder.CreateBr(Merge);
+				Builder.SetInsertPoint(Else);
+				Value *ElseVal = genIRStatlist(Node->ifnode.elsestat, Func);
+				Builder.CreateBr(Merge);
+
+				Builder.SetInsertPoint(Merge);
+				return null;
+			}
+		case For:{
+				BasicBlock *header = Builder.GetInsertBlock();
+				BasicBlock *For = createBB(Func->func, "for");
+				Value *start = genIRStat(Node->fornode.init, Func);
+				Builder.CreateBr(For);
+				Builder.SetInsertPoint(For);
+				Value *cond = genIRStat(Node->fornode.condition, Func);
+				Value *stat = genIRStatlist(Node->fornode.statlist, Func);
+				Value *update = genIRStat(Node->fornode.update, Func);
+				BasicBlock *ForEnd = Builder.GetInsertBlock();
+				BasicBlock *After = createBB(Func->func, "afterfor");
+				Builder.CreateCondBr(cond, For, After);
+				Builder.SetInsertPoint(After);
+
+				return null;
+			}
+		case While:{
+				BasicBlock *header = Builder.GetInsertBlock();
+				BasicBlock *While = createBB(Func->func, "while");
+				Builder.CreateBr(While);
+				Builder.SetInsertPoint(While);
+				Value *cond = genIRStat(Node->whilenode.condition, Func);
+				Value *stat = genIRStatlist(Node->whilenode.statlist, Func);
+				BasicBlock *WhileEnd = Builder.GetInsertBlock();
+				BasicBlock *After = createBB(Func->func, "afterwhile");
+				Builder.CreateCondBr(cond, While, After);
+				Builder.SetInsertPoint(After);
+
+				return null;
+			}
 		default: break;
 
 	}
+	return null;
 }
 
 Value *getArrayVal(struct ASTNode *Node, struct IRFunction *Func)
 {
-	return Builder.CreateLoad(getArrayAddress(Node, Func));	
+	return Builder.CreateAlignedLoad(getArrayAddress(Node, Func), 16);	
 }
 
 Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func)
@@ -108,12 +182,27 @@ Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func)
 			break;
 		}
 	}
-	Value *arr = Builder.CreateGEP(Builder.getInt32Ty(), base, val);
+	//Checking for global variable
+	uint j=0;
+	for(auto i=ModuleOb->global_begin(); i != ModuleOb->global_end(); i++){
+		if(globlist[j++].second == Node->idlit){
+			GlobalVariable *gv = &*i;
+			base = gv;
+			break;
+		}
+	}
+	Value* index[2] = {ConstantInt::get(val->getType(), 0), val};
+	Value *arr = Builder.CreateGEP(base, ArrayRef<Value *>(index, 2));
 	return arr;
 }
 
 Value *getAddress(struct ASTNode *Node, struct IRFunction *Func)
 {
+	if(Node->nodetype == Array1D){
+		cout << "Called" << endl;
+		return getArrayAddress(Node, Func);
+	}
+
 	Function::arg_iterator l, r;
 	int i=0;
 	//Checking for function parameter
@@ -128,6 +217,15 @@ Value *getAddress(struct ASTNode *Node, struct IRFunction *Func)
 			return Func->alloc[i].first;
 		}
 	}
+	//Checking for global variable
+	uint j=0;
+	for(auto i=ModuleOb->global_begin(); i != ModuleOb->global_end(); i++){
+		if(globlist[j++].second == Node->idlit){
+			GlobalVariable *gv = &*i;
+			return gv;
+			break;
+		}
+	}
 	return null;
 }
 
@@ -135,17 +233,18 @@ Value *genOperand(struct ASTNode *Node, struct IRFunction *Func)
 {
 	switch(Node->nodetype){
 		case INTLIT: return Builder.getInt32(Node->litval);
+		case FLT_LIT: return ConstantFP::get(Builder.getFloatTy(), Node->flt_litval);
 		case IDLIT: {
 					Value *val = getIdVal(Node->idlit, Func);
 					if(val != null)
-						return val;
-					cout << "Variable " << Node->idlit << " not defined";
+						cout << "Variable " << Node->idlit << " not defined" << endl;
 					return val;
 				}
 		case Array1D: return getArrayVal(Node, Func);
 		default: break;
 
 	}
+	return null;
 }
 
 Value *getIdVal(string id, struct IRFunction *Func)
@@ -160,7 +259,20 @@ Value *getIdVal(string id, struct IRFunction *Func)
 	//Checking for local variable
 	for(uint i=0; i < Func->alloc.size(); i++){
 		if(Func->alloc[i].second == id){
-			return Builder.CreateLoad(Func->alloc[i].first);
+			return Builder.CreateAlignedLoad(Func->alloc[i].first, 4);
+		}
+	}
+	//Checking for global variable
+	uint j=0;
+	for(auto i=ModuleOb->global_begin(); i != ModuleOb->global_end(); i++){
+		cout << globlist[j++].second << endl;
+		if(globlist[j].second == id){
+			GlobalVariable *gv = &*i;
+			Constant *val = gv->getInitializer();
+			// if(val != null)
+				// return val;
+			return Builder.getInt32(0);
+			break;
 		}
 	}
 	return null;
@@ -234,7 +346,6 @@ struct IRFunction *genIRFunction(struct ASTNode *Node)
 		for(uint j=0; j < variablelist[i].second.size(); j++)
 			parameterlist.push_back(make_pair(variablelist[i].first, (variablelist[i].second)[j]));
 	}
-	variables.push_back(parameterlist);
 	BasicBlock *entry = createBB(func, "entry");
 	Builder.SetInsertPoint(entry);
 
@@ -291,6 +402,10 @@ Type *genIRDtype(struct ASTNode *Node)
 {
 	if(Node->dtype == "int")
 		return Builder.getInt32Ty();
+	else if(Node->dtype == "void")
+		return Builder.getVoidTy();
+	else if(Node->dtype == "float")
+		return Builder.getFloatTy();
 
 }
 pair<string, Value *> genIRId(struct ASTNode *Node)
@@ -304,6 +419,34 @@ pair<string, Value *> genIRId(struct ASTNode *Node)
 	}
 }
 
+void genGlobalVar(struct ASTNode *Node)
+{
+	vlist globalvar;
+	plist parameterlist;
+	globalvar = genIRVarList(globalvar, Node);
+
+	for(uint i=0; i < globalvar.size(); i++){
+		for(uint j=0; j < globalvar[i].second.size(); j++)
+			parameterlist.push_back(make_pair(globalvar[i].first, (globalvar[i].second)[j]));
+	}
+	cout << "here" << endl;
+	for(uint i=0; i < parameterlist.size(); i++){
+		if(parameterlist[i].second.second != null){
+			ConstantInt *num = dyn_cast<ConstantInt>(parameterlist[i].second.second);
+			ArrayType *arr = ArrayType::get(parameterlist[i].first, num->getSExtValue());
+			ModuleOb->getOrInsertGlobal(parameterlist[i].second.first, arr);
+		}
+		else
+			ModuleOb->getOrInsertGlobal(parameterlist[i].second.first, parameterlist[i].first);
+
+		GlobalVariable *gVar = ModuleOb->getNamedGlobal(parameterlist[i].second.first);
+		gVar->setLinkage(GlobalValue::ExternalLinkage);
+		gVar->setAlignment(4);
+		cout << parameterlist[i].second.first << endl;
+		globlist.push_back(make_pair(gVar, parameterlist[i].second.first));
+	}
+}
+
 void genIRCode(struct ASTNode *Node, int i)
 {
 	switch(Node->nodetype){
@@ -312,7 +455,7 @@ void genIRCode(struct ASTNode *Node, int i)
 				IRFunction *Func = genIRFunction(Node);
 				Value *last_inst = genIRStatlist(Node->functionnode.statlist, Func);
 				if(!isa<ReturnInst>(last_inst))
-					Builder.CreateRet(Builder.getInt32(10));
+					Builder.CreateRet(nullptr);
 				if(Func->func != NULL)
 					verifyFunction(*Func->func);
 				// free(Func);
@@ -322,6 +465,12 @@ void genIRCode(struct ASTNode *Node, int i)
 				genIRCode(Node->functionlist.left, i+1);
 				if(Node->functionlist.right != NULL)
 					genIRCode(Node->functionlist.right, i+1);
+			}
+				break;
+		case DecList:{
+				genIRCode(Node->declist.funclist, i+1);
+				if(Node->declist.global != NULL)
+					genGlobalVar(Node->declist.global);
 			}
 				break;
 		default: break;
