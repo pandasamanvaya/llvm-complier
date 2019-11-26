@@ -1,10 +1,35 @@
+int glob, man[100];;
+float main(float c, int z[20]){
+	int a, b, i, d[10];
+	char k, g[14];
+	g = "Hello";
+	d[1] = d[2] + d[3];
+	if(a>c){
+		a += 1;
+		a = c;
+	}
+	else{
+		c = 6.789;
+		b += 1;
+	}
+	c = a+b;
+	a = (c>b)?12:10;
+	for(i=0; i < 10; i+=1){
+		d[i] += 1;
+	}
+	c = a+1;
+	while(c < 100){
+		c+=1;
+		z[12] += 1;
+	}
+	return c;
+}
 
-int f(void a, int v[], int b,int c,char q[][20]){
-int a, b;
-char c;
+int f(int v[12], int b,int c,char q[20]){
+int a, d, i, j;
+bool check;
 a = b + c;
-a[10] /= b+c;
-a[10][10] = a[][102] + 2;
+a /= b+c;
 a = b + (c+d);
 not a;
 a = 2;
@@ -14,34 +39,45 @@ a and b;
 c = not (a or b);
 a > b;
 a  += (b < c);
-a = True;
+check = True;
 a = (a > b ?True:False)? c : d;
-for(i=0; i < n; i+=1){
+for(i=0; i < 10; i+=1){
 a +=1;
 a = -1 + (-10);
-call_func(n);
-if(call_func((a+b)/2, 12, a[30])){
+main(a, v);
+if(main((a+b)/2, a)){
 	return 10;
 }
-if(check_prime(n)){
-	print << "Number is prime";
-}
-print << x*x - y*y;
-if (n%i == 0)
+if (a%i == 0)
 {
 c = b+b;
 a = 2;
 } 
 else{
 while(b>3){
-for(j =0; j < n; j+=1){
+for(j =0; j < 10; j+=1){
 	a = 1;
 }
 }
 }
 }
-return a[23];
-input >> a;
-print << "if break else not" << endl;
-print << (a+B+c);
+return c;
+}
+
+int name(){
+	int d, e;
+	d = 1;
+	e = -(1) + (-10);
+	return d;
+}
+
+int gcd(int x, int y)
+{
+	if(x > y){
+		return gcd(y, x);
+	}
+	if(x == y){
+		return x;
+	}
+	return gcd(x, y%x);
 }

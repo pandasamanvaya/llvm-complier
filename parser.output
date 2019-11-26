@@ -63,114 +63,113 @@ Grammar
    38        | STRING OUT OutList
    39        | STRING
 
-   40 RetStat: RETURN ';'
-   41        | RETURN Expr ';'
+   40 RetStat: RETURN Expr ';'
 
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList '}'
-   43         | WHILE '(' Expr ')' '{' StatList '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList '}'
+   42         | WHILE '(' Expr ')' '{' StatList '}'
 
-   44 CondStat: IF '(' Expr ')' '{' StatList '}'
-   45         | IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}'
+   43 CondStat: IF '(' Expr ')' '{' StatList '}'
+   44         | IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}'
 
-   46 ExprStat: Expr ';'
+   45 ExprStat: Expr ';'
 
-   47 Expr: Var AOP Expr
-   48     | Var EQUAL Expr
-   49     | Var EQUAL STRING
-   50     | TerExpr
+   46 Expr: Var AOP Expr
+   47     | Var EQUAL Expr
+   48     | Var EQUAL STRING
+   49     | TerExpr
 
-   51 TerExpr: TerExpr '?' OrTerm ':' OrTerm
-   52        | OrTerm
+   50 TerExpr: TerExpr '?' OrTerm ':' OrTerm
+   51        | OrTerm
 
-   53 OrTerm: OrTerm OR AndTerm
-   54       | AndTerm
+   52 OrTerm: OrTerm OR AndTerm
+   53       | AndTerm
 
-   55 AndTerm: AndTerm AND RelTerm
-   56        | RelTerm
+   54 AndTerm: AndTerm AND RelTerm
+   55        | RelTerm
 
-   57 RelTerm: SumTerm ROP SumTerm
-   58        | SumTerm RDOP SumTerm
-   59        | SumTerm
+   56 RelTerm: SumTerm ROP SumTerm
+   57        | SumTerm RDOP SumTerm
+   58        | SumTerm
 
-   60 SumTerm: SumTerm SOP MulTerm
-   61        | MulTerm
+   59 SumTerm: SumTerm SOP MulTerm
+   60        | MulTerm
 
-   62 MulTerm: MulTerm MOP UnTerm
-   63        | UnTerm
+   61 MulTerm: MulTerm MOP UnTerm
+   62        | UnTerm
 
-   64 UnTerm: NOT UnTerm
-   65       | SOP UnTerm
-   66       | Term
+   63 UnTerm: NOT UnTerm
+   64       | SOP UnTerm
+   65       | Term
 
-   67 Term: Var
-   68     | NonVar
+   66 Term: Var
+   67     | NonVar
 
-   69 Var: ID
-   70    | ID '[' ']'
-   71    | ID '[' Expr ']'
-   72    | ID '[' ']' '[' Expr ']'
-   73    | ID '[' Expr ']' '[' Expr ']'
+   68 Var: ID
+   69    | ID '[' ']'
+   70    | ID '[' Expr ']'
+   71    | ID '[' ']' '[' Expr ']'
+   72    | ID '[' Expr ']' '[' Expr ']'
 
-   74 NonVar: '(' Expr ')'
-   75       | Constant
-   76       | FunCall
+   73 NonVar: '(' Expr ')'
+   74       | Constant
+   75       | FunCall
 
-   77 FunCall: ID '(' ArgList ')'
+   76 FunCall: ID '(' ArgList ')'
 
-   78 ArgList: Expr ',' ArgList
-   79        | Expr
-   80        | %empty
+   77 ArgList: Expr ',' ArgList
+   78        | Expr
+   79        | %empty
 
-   81 Constant: NUMBER
-   82         | FLT_NUM
-   83         | TRUE
-   84         | FALSE
+   80 Constant: NUMBER
+   81         | FLT_NUM
+   82         | TRUE
+   83         | FALSE
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 11 12 13 14 42 43 44 45 74 77
-')' (41) 11 12 13 14 42 43 44 45 74 77
-',' (44) 7 20 78
-':' (58) 51
-';' (59) 2 4 5 30 31 40 41 42 46
-'?' (63) 51
-'[' (91) 70 71 72 73
-']' (93) 70 71 72 73
-'{' (123) 11 12 13 14 42 43 44 45
-'}' (125) 11 12 13 14 42 43 44 45
+'(' (40) 11 12 13 14 41 42 43 44 73 76
+')' (41) 11 12 13 14 41 42 43 44 73 76
+',' (44) 7 20 77
+':' (58) 50
+';' (59) 2 4 5 30 31 40 41 45
+'?' (63) 50
+'[' (91) 69 70 71 72
+']' (93) 69 70 71 72
+'{' (123) 11 12 13 14 41 42 43 44
+'}' (125) 11 12 13 14 41 42 43 44
 error (256)
-ID (258) 11 12 13 14 69 70 71 72 73 77
+ID (258) 11 12 13 14 68 69 70 71 72 76
 INT (259) 15
 CHAR (260) 16
 BOOL (261) 17
 VOID (262) 18
-IF (263) 44 45
-ELSE (264) 45
-FOR (265) 42
-WHILE (266) 43
+IF (263) 43 44
+ELSE (264) 44
+FOR (265) 41
+WHILE (266) 42
 INPUT (267) 32
 PRINT (268) 35
-ROP (269) 57
-STRING (270) 38 39 49
+ROP (269) 56
+STRING (270) 38 39 48
 FLOAT (271) 19
-RDOP (272) 58
-AOP (273) 47
-AND (274) 55
-OR (275) 53
-NOT (276) 64
-TRUE (277) 83
-FALSE (278) 84
-EQUAL (279) 48 49
+RDOP (272) 57
+AOP (273) 46
+AND (274) 54
+OR (275) 52
+NOT (276) 63
+TRUE (277) 82
+FALSE (278) 83
+EQUAL (279) 47 48
 BREAK (280)
-RETURN (281) 40 41
+RETURN (281) 40
 IN (282) 32 33
 OUT (283) 35 36 38
-SOP (284) 60 65
-MOP (285) 62
-NUMBER (286) 81
-FLT_NUM (287) 82
+SOP (284) 59 64
+MOP (285) 61
+NUMBER (286) 80
+FLT_NUM (287) 81
 
 
 Nonterminals, with rules where they appear
@@ -198,7 +197,7 @@ ParamList (52)
 Param (53)
     on left: 22, on right: 20 21
 StatList (54)
-    on left: 23 24, on right: 11 12 13 14 24 42 43 44 45
+    on left: 23 24, on right: 11 12 13 14 24 41 42 43 44
 Statement (55)
     on left: 25 26 27 28 29, on right: 23 24
 IOStat (56)
@@ -212,42 +211,42 @@ OutStat (59)
 OutList (60)
     on left: 36 37 38 39, on right: 35 36 38
 RetStat (61)
-    on left: 40 41, on right: 29
+    on left: 40, on right: 29
 LoopStat (62)
-    on left: 42 43, on right: 27
+    on left: 41 42, on right: 27
 CondStat (63)
-    on left: 44 45, on right: 26
+    on left: 43 44, on right: 26
 ExprStat (64)
-    on left: 46, on right: 25
+    on left: 45, on right: 25
 Expr (65)
-    on left: 47 48 49 50, on right: 36 37 41 42 43 44 45 46 47 48 71
-    72 73 74 78 79
+    on left: 46 47 48 49, on right: 36 37 40 41 42 43 44 45 46 47 70
+    71 72 73 77 78
 TerExpr (66)
-    on left: 51 52, on right: 50 51
+    on left: 50 51, on right: 49 50
 OrTerm (67)
-    on left: 53 54, on right: 51 52 53
+    on left: 52 53, on right: 50 51 52
 AndTerm (68)
-    on left: 55 56, on right: 53 54 55
+    on left: 54 55, on right: 52 53 54
 RelTerm (69)
-    on left: 57 58 59, on right: 55 56
+    on left: 56 57 58, on right: 54 55
 SumTerm (70)
-    on left: 60 61, on right: 57 58 59 60
+    on left: 59 60, on right: 56 57 58 59
 MulTerm (71)
-    on left: 62 63, on right: 60 61 62
+    on left: 61 62, on right: 59 60 61
 UnTerm (72)
-    on left: 64 65 66, on right: 62 63 64 65
+    on left: 63 64 65, on right: 61 62 63 64
 Term (73)
-    on left: 67 68, on right: 66
+    on left: 66 67, on right: 65
 Var (74)
-    on left: 69 70 71 72 73, on right: 7 8 22 33 34 47 48 49 67
+    on left: 68 69 70 71 72, on right: 7 8 22 33 34 46 47 48 66
 NonVar (75)
-    on left: 74 75 76, on right: 68
+    on left: 73 74 75, on right: 67
 FunCall (76)
-    on left: 77, on right: 76
+    on left: 76, on right: 75
 ArgList (77)
-    on left: 78 79 80, on right: 77 78
+    on left: 77 78 79, on right: 76 77
 Constant (78)
-    on left: 81 82 83 84, on right: 75
+    on left: 80 81 82 83, on right: 74
 
 
 State 0
@@ -435,16 +434,16 @@ State 18
    12        | Type ID . '(' ParamList ')' '{' StatList '}'
    13        | Type ID . '(' ')' '{' VarDecList StatList '}'
    14        | Type ID . '(' ')' '{' StatList '}'
-   69 Var: ID .
-   70    | ID . '[' ']'
-   71    | ID . '[' Expr ']'
-   72    | ID . '[' ']' '[' Expr ']'
-   73    | ID . '[' Expr ']' '[' Expr ']'
+   68 Var: ID .
+   69    | ID . '[' ']'
+   70    | ID . '[' Expr ']'
+   71    | ID . '[' ']' '[' Expr ']'
+   72    | ID . '[' Expr ']' '[' Expr ']'
 
     '('  shift, and go to state 25
     '['  shift, and go to state 26
 
-    $default  reduce using rule 69 (Var)
+    $default  reduce using rule 68 (Var)
 
 
 State 19
@@ -519,10 +518,10 @@ State 25
 
 State 26
 
-   70 Var: ID '[' . ']'
-   71    | ID '[' . Expr ']'
-   72    | ID '[' . ']' '[' Expr ']'
-   73    | ID '[' . Expr ']' '[' Expr ']'
+   69 Var: ID '[' . ']'
+   70    | ID '[' . Expr ']'
+   71    | ID '[' . ']' '[' Expr ']'
+   72    | ID '[' . Expr ']' '[' Expr ']'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -561,15 +560,15 @@ State 27
 
 State 28
 
-   69 Var: ID .
-   70    | ID . '[' ']'
-   71    | ID . '[' Expr ']'
-   72    | ID . '[' ']' '[' Expr ']'
-   73    | ID . '[' Expr ']' '[' Expr ']'
+   68 Var: ID .
+   69    | ID . '[' ']'
+   70    | ID . '[' Expr ']'
+   71    | ID . '[' ']' '[' Expr ']'
+   72    | ID . '[' Expr ']' '[' Expr ']'
 
     '['  shift, and go to state 26
 
-    $default  reduce using rule 69 (Var)
+    $default  reduce using rule 68 (Var)
 
 
 State 29
@@ -609,22 +608,22 @@ State 32
 
 State 33
 
-   69 Var: ID .
-   70    | ID . '[' ']'
-   71    | ID . '[' Expr ']'
-   72    | ID . '[' ']' '[' Expr ']'
-   73    | ID . '[' Expr ']' '[' Expr ']'
-   77 FunCall: ID . '(' ArgList ')'
+   68 Var: ID .
+   69    | ID . '[' ']'
+   70    | ID . '[' Expr ']'
+   71    | ID . '[' ']' '[' Expr ']'
+   72    | ID . '[' Expr ']' '[' Expr ']'
+   76 FunCall: ID . '(' ArgList ')'
 
     '('  shift, and go to state 60
     '['  shift, and go to state 26
 
-    $default  reduce using rule 69 (Var)
+    $default  reduce using rule 68 (Var)
 
 
 State 34
 
-   64 UnTerm: NOT . UnTerm
+   63 UnTerm: NOT . UnTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -645,21 +644,21 @@ State 34
 
 State 35
 
-   83 Constant: TRUE .
+   82 Constant: TRUE .
 
-    $default  reduce using rule 83 (Constant)
+    $default  reduce using rule 82 (Constant)
 
 
 State 36
 
-   84 Constant: FALSE .
+   83 Constant: FALSE .
 
-    $default  reduce using rule 84 (Constant)
+    $default  reduce using rule 83 (Constant)
 
 
 State 37
 
-   65 UnTerm: SOP . UnTerm
+   64 UnTerm: SOP . UnTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -680,21 +679,21 @@ State 37
 
 State 38
 
-   81 Constant: NUMBER .
+   80 Constant: NUMBER .
 
-    $default  reduce using rule 81 (Constant)
+    $default  reduce using rule 80 (Constant)
 
 
 State 39
 
-   82 Constant: FLT_NUM .
+   81 Constant: FLT_NUM .
 
-    $default  reduce using rule 82 (Constant)
+    $default  reduce using rule 81 (Constant)
 
 
 State 40
 
-   74 NonVar: '(' . Expr ')'
+   73 NonVar: '(' . Expr ')'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -722,129 +721,129 @@ State 40
 
 State 41
 
-   70 Var: ID '[' ']' .
-   72    | ID '[' ']' . '[' Expr ']'
+   69 Var: ID '[' ']' .
+   71    | ID '[' ']' . '[' Expr ']'
 
     '['  shift, and go to state 65
 
-    $default  reduce using rule 70 (Var)
+    $default  reduce using rule 69 (Var)
 
 
 State 42
 
-   71 Var: ID '[' Expr . ']'
-   73    | ID '[' Expr . ']' '[' Expr ']'
+   70 Var: ID '[' Expr . ']'
+   72    | ID '[' Expr . ']' '[' Expr ']'
 
     ']'  shift, and go to state 66
 
 
 State 43
 
-   50 Expr: TerExpr .
-   51 TerExpr: TerExpr . '?' OrTerm ':' OrTerm
+   49 Expr: TerExpr .
+   50 TerExpr: TerExpr . '?' OrTerm ':' OrTerm
 
     '?'  shift, and go to state 67
 
-    $default  reduce using rule 50 (Expr)
+    $default  reduce using rule 49 (Expr)
 
 
 State 44
 
-   52 TerExpr: OrTerm .
-   53 OrTerm: OrTerm . OR AndTerm
+   51 TerExpr: OrTerm .
+   52 OrTerm: OrTerm . OR AndTerm
 
     OR  shift, and go to state 68
 
-    $default  reduce using rule 52 (TerExpr)
+    $default  reduce using rule 51 (TerExpr)
 
 
 State 45
 
-   54 OrTerm: AndTerm .
-   55 AndTerm: AndTerm . AND RelTerm
+   53 OrTerm: AndTerm .
+   54 AndTerm: AndTerm . AND RelTerm
 
     AND  shift, and go to state 69
 
-    $default  reduce using rule 54 (OrTerm)
+    $default  reduce using rule 53 (OrTerm)
 
 
 State 46
 
-   56 AndTerm: RelTerm .
+   55 AndTerm: RelTerm .
 
-    $default  reduce using rule 56 (AndTerm)
+    $default  reduce using rule 55 (AndTerm)
 
 
 State 47
 
-   57 RelTerm: SumTerm . ROP SumTerm
-   58        | SumTerm . RDOP SumTerm
-   59        | SumTerm .
-   60 SumTerm: SumTerm . SOP MulTerm
+   56 RelTerm: SumTerm . ROP SumTerm
+   57        | SumTerm . RDOP SumTerm
+   58        | SumTerm .
+   59 SumTerm: SumTerm . SOP MulTerm
 
     ROP   shift, and go to state 70
     RDOP  shift, and go to state 71
     SOP   shift, and go to state 72
 
-    $default  reduce using rule 59 (RelTerm)
+    $default  reduce using rule 58 (RelTerm)
 
 
 State 48
 
-   61 SumTerm: MulTerm .
-   62 MulTerm: MulTerm . MOP UnTerm
+   60 SumTerm: MulTerm .
+   61 MulTerm: MulTerm . MOP UnTerm
 
     MOP  shift, and go to state 73
 
-    $default  reduce using rule 61 (SumTerm)
+    $default  reduce using rule 60 (SumTerm)
 
 
 State 49
 
-   63 MulTerm: UnTerm .
+   62 MulTerm: UnTerm .
 
-    $default  reduce using rule 63 (MulTerm)
+    $default  reduce using rule 62 (MulTerm)
 
 
 State 50
 
-   66 UnTerm: Term .
+   65 UnTerm: Term .
 
-    $default  reduce using rule 66 (UnTerm)
+    $default  reduce using rule 65 (UnTerm)
 
 
 State 51
 
-   47 Expr: Var . AOP Expr
-   48     | Var . EQUAL Expr
-   49     | Var . EQUAL STRING
-   67 Term: Var .
+   46 Expr: Var . AOP Expr
+   47     | Var . EQUAL Expr
+   48     | Var . EQUAL STRING
+   66 Term: Var .
 
     AOP    shift, and go to state 74
     EQUAL  shift, and go to state 75
 
-    $default  reduce using rule 67 (Term)
+    $default  reduce using rule 66 (Term)
 
 
 State 52
 
-   68 Term: NonVar .
+   67 Term: NonVar .
 
-    $default  reduce using rule 68 (Term)
+    $default  reduce using rule 67 (Term)
 
 
 State 53
 
-   76 NonVar: FunCall .
+   75 NonVar: FunCall .
 
-    $default  reduce using rule 76 (NonVar)
+    $default  reduce using rule 75 (NonVar)
 
 
 State 54
 
-   75 NonVar: Constant .
+   74 NonVar: Constant .
 
-    $default  reduce using rule 75 (NonVar)
+    $default  reduce using rule 74 (NonVar)
 
 
 State 55
@@ -938,7 +937,7 @@ State 59
 
 State 60
 
-   77 FunCall: ID '(' . ArgList ')'
+   76 FunCall: ID '(' . ArgList ')'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -949,7 +948,7 @@ State 60
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    $default  reduce using rule 80 (ArgList)
+    $default  reduce using rule 79 (ArgList)
 
     Expr      go to state 95
     TerExpr   go to state 43
@@ -969,35 +968,35 @@ State 60
 
 State 61
 
-   64 UnTerm: NOT UnTerm .
+   63 UnTerm: NOT UnTerm .
 
-    $default  reduce using rule 64 (UnTerm)
+    $default  reduce using rule 63 (UnTerm)
 
 
 State 62
 
-   67 Term: Var .
+   66 Term: Var .
 
-    $default  reduce using rule 67 (Term)
+    $default  reduce using rule 66 (Term)
 
 
 State 63
 
-   65 UnTerm: SOP UnTerm .
+   64 UnTerm: SOP UnTerm .
 
-    $default  reduce using rule 65 (UnTerm)
+    $default  reduce using rule 64 (UnTerm)
 
 
 State 64
 
-   74 NonVar: '(' Expr . ')'
+   73 NonVar: '(' Expr . ')'
 
     ')'  shift, and go to state 97
 
 
 State 65
 
-   72 Var: ID '[' ']' '[' . Expr ']'
+   71 Var: ID '[' ']' '[' . Expr ']'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1025,17 +1024,17 @@ State 65
 
 State 66
 
-   71 Var: ID '[' Expr ']' .
-   73    | ID '[' Expr ']' . '[' Expr ']'
+   70 Var: ID '[' Expr ']' .
+   72    | ID '[' Expr ']' . '[' Expr ']'
 
     '['  shift, and go to state 99
 
-    $default  reduce using rule 71 (Var)
+    $default  reduce using rule 70 (Var)
 
 
 State 67
 
-   51 TerExpr: TerExpr '?' . OrTerm ':' OrTerm
+   50 TerExpr: TerExpr '?' . OrTerm ':' OrTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1061,7 +1060,7 @@ State 67
 
 State 68
 
-   53 OrTerm: OrTerm OR . AndTerm
+   52 OrTerm: OrTerm OR . AndTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1086,7 +1085,7 @@ State 68
 
 State 69
 
-   55 AndTerm: AndTerm AND . RelTerm
+   54 AndTerm: AndTerm AND . RelTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1110,7 +1109,7 @@ State 69
 
 State 70
 
-   57 RelTerm: SumTerm ROP . SumTerm
+   56 RelTerm: SumTerm ROP . SumTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1133,7 +1132,7 @@ State 70
 
 State 71
 
-   58 RelTerm: SumTerm RDOP . SumTerm
+   57 RelTerm: SumTerm RDOP . SumTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1156,7 +1155,7 @@ State 71
 
 State 72
 
-   60 SumTerm: SumTerm SOP . MulTerm
+   59 SumTerm: SumTerm SOP . MulTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1178,7 +1177,7 @@ State 72
 
 State 73
 
-   62 MulTerm: MulTerm MOP . UnTerm
+   61 MulTerm: MulTerm MOP . UnTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1199,7 +1198,7 @@ State 73
 
 State 74
 
-   47 Expr: Var AOP . Expr
+   46 Expr: Var AOP . Expr
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1227,8 +1226,8 @@ State 74
 
 State 75
 
-   48 Expr: Var EQUAL . Expr
-   49     | Var EQUAL . STRING
+   47 Expr: Var EQUAL . Expr
+   48     | Var EQUAL . STRING
 
     ID       shift, and go to state 33
     STRING   shift, and go to state 108
@@ -1257,22 +1256,22 @@ State 75
 
 State 76
 
-   44 CondStat: IF . '(' Expr ')' '{' StatList '}'
-   45         | IF . '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}'
+   43 CondStat: IF . '(' Expr ')' '{' StatList '}'
+   44         | IF . '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}'
 
     '('  shift, and go to state 110
 
 
 State 77
 
-   42 LoopStat: FOR . '(' Expr ';' Expr ';' Expr ')' '{' StatList '}'
+   41 LoopStat: FOR . '(' Expr ';' Expr ';' Expr ')' '{' StatList '}'
 
     '('  shift, and go to state 111
 
 
 State 78
 
-   43 LoopStat: WHILE . '(' Expr ')' '{' StatList '}'
+   42 LoopStat: WHILE . '(' Expr ')' '{' StatList '}'
 
     '('  shift, and go to state 112
 
@@ -1293,8 +1292,7 @@ State 80
 
 State 81
 
-   40 RetStat: RETURN . ';'
-   41        | RETURN . Expr ';'
+   40 RetStat: RETURN . Expr ';'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1303,10 +1301,9 @@ State 81
     SOP      shift, and go to state 37
     NUMBER   shift, and go to state 38
     FLT_NUM  shift, and go to state 39
-    ';'      shift, and go to state 115
     '('      shift, and go to state 40
 
-    Expr      go to state 116
+    Expr      go to state 115
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -1340,7 +1337,7 @@ State 82
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    StatList   go to state 117
+    StatList   go to state 116
     Statement  go to state 84
     IOStat     go to state 85
     InpStat    go to state 86
@@ -1368,7 +1365,7 @@ State 83
 
    14 FuncDec: Type ID '(' ')' '{' StatList . '}'
 
-    '}'  shift, and go to state 118
+    '}'  shift, and go to state 117
 
 
 State 84
@@ -1393,7 +1390,7 @@ State 84
 
     $default  reduce using rule 23 (StatList)
 
-    StatList   go to state 119
+    StatList   go to state 118
     Statement  go to state 84
     IOStat     go to state 85
     InpStat    go to state 86
@@ -1428,14 +1425,14 @@ State 86
 
    30 IOStat: InpStat . ';'
 
-    ';'  shift, and go to state 120
+    ';'  shift, and go to state 119
 
 
 State 87
 
    31 IOStat: OutStat . ';'
 
-    ';'  shift, and go to state 121
+    ';'  shift, and go to state 120
 
 
 State 88
@@ -1468,9 +1465,9 @@ State 91
 
 State 92
 
-   46 ExprStat: Expr . ';'
+   45 ExprStat: Expr . ';'
 
-    ';'  shift, and go to state 122
+    ';'  shift, and go to state 121
 
 
 State 93
@@ -1498,10 +1495,10 @@ State 93
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    VarDecList  go to state 123
+    VarDecList  go to state 122
     VarDec      go to state 9
     Type        go to state 23
-    StatList    go to state 124
+    StatList    go to state 123
     Statement   go to state 84
     IOStat      go to state 85
     InpStat     go to state 86
@@ -1534,38 +1531,38 @@ State 94
 
 State 95
 
-   78 ArgList: Expr . ',' ArgList
-   79        | Expr .
+   77 ArgList: Expr . ',' ArgList
+   78        | Expr .
 
-    ','  shift, and go to state 125
+    ','  shift, and go to state 124
 
-    $default  reduce using rule 79 (ArgList)
+    $default  reduce using rule 78 (ArgList)
 
 
 State 96
 
-   77 FunCall: ID '(' ArgList . ')'
+   76 FunCall: ID '(' ArgList . ')'
 
-    ')'  shift, and go to state 126
+    ')'  shift, and go to state 125
 
 
 State 97
 
-   74 NonVar: '(' Expr ')' .
+   73 NonVar: '(' Expr ')' .
 
-    $default  reduce using rule 74 (NonVar)
+    $default  reduce using rule 73 (NonVar)
 
 
 State 98
 
-   72 Var: ID '[' ']' '[' Expr . ']'
+   71 Var: ID '[' ']' '[' Expr . ']'
 
-    ']'  shift, and go to state 127
+    ']'  shift, and go to state 126
 
 
 State 99
 
-   73 Var: ID '[' Expr ']' '[' . Expr ']'
+   72 Var: ID '[' Expr ']' '[' . Expr ']'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1576,7 +1573,7 @@ State 99
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    Expr      go to state 128
+    Expr      go to state 127
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -1593,92 +1590,120 @@ State 99
 
 State 100
 
-   51 TerExpr: TerExpr '?' OrTerm . ':' OrTerm
-   53 OrTerm: OrTerm . OR AndTerm
+   50 TerExpr: TerExpr '?' OrTerm . ':' OrTerm
+   52 OrTerm: OrTerm . OR AndTerm
 
     OR   shift, and go to state 68
-    ':'  shift, and go to state 129
+    ':'  shift, and go to state 128
 
 
 State 101
 
-   53 OrTerm: OrTerm OR AndTerm .
-   55 AndTerm: AndTerm . AND RelTerm
+   52 OrTerm: OrTerm OR AndTerm .
+   54 AndTerm: AndTerm . AND RelTerm
 
     AND  shift, and go to state 69
 
-    $default  reduce using rule 53 (OrTerm)
+    $default  reduce using rule 52 (OrTerm)
 
 
 State 102
 
-   55 AndTerm: AndTerm AND RelTerm .
+   54 AndTerm: AndTerm AND RelTerm .
 
-    $default  reduce using rule 55 (AndTerm)
+    $default  reduce using rule 54 (AndTerm)
 
 
 State 103
 
-   57 RelTerm: SumTerm ROP SumTerm .
-   60 SumTerm: SumTerm . SOP MulTerm
+   56 RelTerm: SumTerm ROP SumTerm .
+   59 SumTerm: SumTerm . SOP MulTerm
+
+    SOP  shift, and go to state 72
+
+    $default  reduce using rule 56 (RelTerm)
+
+
+State 104
+
+   57 RelTerm: SumTerm RDOP SumTerm .
+   59 SumTerm: SumTerm . SOP MulTerm
 
     SOP  shift, and go to state 72
 
     $default  reduce using rule 57 (RelTerm)
 
 
-State 104
-
-   58 RelTerm: SumTerm RDOP SumTerm .
-   60 SumTerm: SumTerm . SOP MulTerm
-
-    SOP  shift, and go to state 72
-
-    $default  reduce using rule 58 (RelTerm)
-
-
 State 105
 
-   60 SumTerm: SumTerm SOP MulTerm .
-   62 MulTerm: MulTerm . MOP UnTerm
+   59 SumTerm: SumTerm SOP MulTerm .
+   61 MulTerm: MulTerm . MOP UnTerm
 
     MOP  shift, and go to state 73
 
-    $default  reduce using rule 60 (SumTerm)
+    $default  reduce using rule 59 (SumTerm)
 
 
 State 106
 
-   62 MulTerm: MulTerm MOP UnTerm .
+   61 MulTerm: MulTerm MOP UnTerm .
 
-    $default  reduce using rule 62 (MulTerm)
+    $default  reduce using rule 61 (MulTerm)
 
 
 State 107
 
-   47 Expr: Var AOP Expr .
+   46 Expr: Var AOP Expr .
 
-    $default  reduce using rule 47 (Expr)
+    $default  reduce using rule 46 (Expr)
 
 
 State 108
 
-   49 Expr: Var EQUAL STRING .
-
-    $default  reduce using rule 49 (Expr)
-
-
-State 109
-
-   48 Expr: Var EQUAL Expr .
+   48 Expr: Var EQUAL STRING .
 
     $default  reduce using rule 48 (Expr)
 
 
+State 109
+
+   47 Expr: Var EQUAL Expr .
+
+    $default  reduce using rule 47 (Expr)
+
+
 State 110
 
-   44 CondStat: IF '(' . Expr ')' '{' StatList '}'
-   45         | IF '(' . Expr ')' '{' StatList '}' ELSE '{' StatList '}'
+   43 CondStat: IF '(' . Expr ')' '{' StatList '}'
+   44         | IF '(' . Expr ')' '{' StatList '}' ELSE '{' StatList '}'
+
+    ID       shift, and go to state 33
+    NOT      shift, and go to state 34
+    TRUE     shift, and go to state 35
+    FALSE    shift, and go to state 36
+    SOP      shift, and go to state 37
+    NUMBER   shift, and go to state 38
+    FLT_NUM  shift, and go to state 39
+    '('      shift, and go to state 40
+
+    Expr      go to state 129
+    TerExpr   go to state 43
+    OrTerm    go to state 44
+    AndTerm   go to state 45
+    RelTerm   go to state 46
+    SumTerm   go to state 47
+    MulTerm   go to state 48
+    UnTerm    go to state 49
+    Term      go to state 50
+    Var       go to state 51
+    NonVar    go to state 52
+    FunCall   go to state 53
+    Constant  go to state 54
+
+
+State 111
+
+   41 LoopStat: FOR '(' . Expr ';' Expr ';' Expr ')' '{' StatList '}'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1704,9 +1729,9 @@ State 110
     Constant  go to state 54
 
 
-State 111
+State 112
 
-   42 LoopStat: FOR '(' . Expr ';' Expr ';' Expr ')' '{' StatList '}'
+   42 LoopStat: WHILE '(' . Expr ')' '{' StatList '}'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1732,42 +1757,14 @@ State 111
     Constant  go to state 54
 
 
-State 112
-
-   43 LoopStat: WHILE '(' . Expr ')' '{' StatList '}'
-
-    ID       shift, and go to state 33
-    NOT      shift, and go to state 34
-    TRUE     shift, and go to state 35
-    FALSE    shift, and go to state 36
-    SOP      shift, and go to state 37
-    NUMBER   shift, and go to state 38
-    FLT_NUM  shift, and go to state 39
-    '('      shift, and go to state 40
-
-    Expr      go to state 132
-    TerExpr   go to state 43
-    OrTerm    go to state 44
-    AndTerm   go to state 45
-    RelTerm   go to state 46
-    SumTerm   go to state 47
-    MulTerm   go to state 48
-    UnTerm    go to state 49
-    Term      go to state 50
-    Var       go to state 51
-    NonVar    go to state 52
-    FunCall   go to state 53
-    Constant  go to state 54
-
-
 State 113
 
    32 InpStat: INPUT IN . InpList
 
     ID  shift, and go to state 28
 
-    InpList  go to state 133
-    Var      go to state 134
+    InpList  go to state 132
+    Var      go to state 133
 
 
 State 114
@@ -1775,7 +1772,7 @@ State 114
    35 OutStat: PRINT OUT . OutList
 
     ID       shift, and go to state 33
-    STRING   shift, and go to state 135
+    STRING   shift, and go to state 134
     NOT      shift, and go to state 34
     TRUE     shift, and go to state 35
     FALSE    shift, and go to state 36
@@ -1784,8 +1781,8 @@ State 114
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    OutList   go to state 136
-    Expr      go to state 137
+    OutList   go to state 135
+    Expr      go to state 136
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -1802,61 +1799,54 @@ State 114
 
 State 115
 
-   40 RetStat: RETURN ';' .
+   40 RetStat: RETURN Expr . ';'
 
-    $default  reduce using rule 40 (RetStat)
+    ';'  shift, and go to state 137
 
 
 State 116
 
-   41 RetStat: RETURN Expr . ';'
+   13 FuncDec: Type ID '(' ')' '{' VarDecList StatList . '}'
 
-    ';'  shift, and go to state 138
+    '}'  shift, and go to state 138
 
 
 State 117
-
-   13 FuncDec: Type ID '(' ')' '{' VarDecList StatList . '}'
-
-    '}'  shift, and go to state 139
-
-
-State 118
 
    14 FuncDec: Type ID '(' ')' '{' StatList '}' .
 
     $default  reduce using rule 14 (FuncDec)
 
 
-State 119
+State 118
 
    24 StatList: Statement StatList .
 
     $default  reduce using rule 24 (StatList)
 
 
-State 120
+State 119
 
    30 IOStat: InpStat ';' .
 
     $default  reduce using rule 30 (IOStat)
 
 
-State 121
+State 120
 
    31 IOStat: OutStat ';' .
 
     $default  reduce using rule 31 (IOStat)
 
 
+State 121
+
+   45 ExprStat: Expr ';' .
+
+    $default  reduce using rule 45 (ExprStat)
+
+
 State 122
-
-   46 ExprStat: Expr ';' .
-
-    $default  reduce using rule 46 (ExprStat)
-
-
-State 123
 
    11 FuncDec: Type ID '(' ParamList ')' '{' VarDecList . StatList '}'
 
@@ -1875,7 +1865,7 @@ State 123
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    StatList   go to state 140
+    StatList   go to state 139
     Statement  go to state 84
     IOStat     go to state 85
     InpStat    go to state 86
@@ -1899,16 +1889,16 @@ State 123
     Constant   go to state 54
 
 
-State 124
+State 123
 
    12 FuncDec: Type ID '(' ParamList ')' '{' StatList . '}'
 
-    '}'  shift, and go to state 141
+    '}'  shift, and go to state 140
 
 
-State 125
+State 124
 
-   78 ArgList: Expr ',' . ArgList
+   77 ArgList: Expr ',' . ArgList
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1919,7 +1909,7 @@ State 125
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    $default  reduce using rule 80 (ArgList)
+    $default  reduce using rule 79 (ArgList)
 
     Expr      go to state 95
     TerExpr   go to state 43
@@ -1933,34 +1923,34 @@ State 125
     Var       go to state 51
     NonVar    go to state 52
     FunCall   go to state 53
-    ArgList   go to state 142
+    ArgList   go to state 141
     Constant  go to state 54
+
+
+State 125
+
+   76 FunCall: ID '(' ArgList ')' .
+
+    $default  reduce using rule 76 (FunCall)
 
 
 State 126
 
-   77 FunCall: ID '(' ArgList ')' .
+   71 Var: ID '[' ']' '[' Expr ']' .
 
-    $default  reduce using rule 77 (FunCall)
+    $default  reduce using rule 71 (Var)
 
 
 State 127
 
-   72 Var: ID '[' ']' '[' Expr ']' .
+   72 Var: ID '[' Expr ']' '[' Expr . ']'
 
-    $default  reduce using rule 72 (Var)
+    ']'  shift, and go to state 142
 
 
 State 128
 
-   73 Var: ID '[' Expr ']' '[' Expr . ']'
-
-    ']'  shift, and go to state 143
-
-
-State 129
-
-   51 TerExpr: TerExpr '?' OrTerm ':' . OrTerm
+   50 TerExpr: TerExpr '?' OrTerm ':' . OrTerm
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -1971,7 +1961,7 @@ State 129
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    OrTerm    go to state 144
+    OrTerm    go to state 143
     AndTerm   go to state 45
     RelTerm   go to state 46
     SumTerm   go to state 47
@@ -1984,135 +1974,135 @@ State 129
     Constant  go to state 54
 
 
+State 129
+
+   43 CondStat: IF '(' Expr . ')' '{' StatList '}'
+   44         | IF '(' Expr . ')' '{' StatList '}' ELSE '{' StatList '}'
+
+    ')'  shift, and go to state 144
+
+
 State 130
 
-   44 CondStat: IF '(' Expr . ')' '{' StatList '}'
-   45         | IF '(' Expr . ')' '{' StatList '}' ELSE '{' StatList '}'
+   41 LoopStat: FOR '(' Expr . ';' Expr ';' Expr ')' '{' StatList '}'
 
-    ')'  shift, and go to state 145
+    ';'  shift, and go to state 145
 
 
 State 131
 
-   42 LoopStat: FOR '(' Expr . ';' Expr ';' Expr ')' '{' StatList '}'
+   42 LoopStat: WHILE '(' Expr . ')' '{' StatList '}'
 
-    ';'  shift, and go to state 146
+    ')'  shift, and go to state 146
 
 
 State 132
-
-   43 LoopStat: WHILE '(' Expr . ')' '{' StatList '}'
-
-    ')'  shift, and go to state 147
-
-
-State 133
 
    32 InpStat: INPUT IN InpList .
 
     $default  reduce using rule 32 (InpStat)
 
 
-State 134
+State 133
 
    33 InpList: Var . IN InpList
    34        | Var .
 
-    IN  shift, and go to state 148
+    IN  shift, and go to state 147
 
     $default  reduce using rule 34 (InpList)
 
 
-State 135
+State 134
 
    38 OutList: STRING . OUT OutList
    39        | STRING .
 
-    OUT  shift, and go to state 149
+    OUT  shift, and go to state 148
 
     $default  reduce using rule 39 (OutList)
 
 
-State 136
+State 135
 
    35 OutStat: PRINT OUT OutList .
 
     $default  reduce using rule 35 (OutStat)
 
 
-State 137
+State 136
 
    36 OutList: Expr . OUT OutList
    37        | Expr .
 
-    OUT  shift, and go to state 150
+    OUT  shift, and go to state 149
 
     $default  reduce using rule 37 (OutList)
 
 
+State 137
+
+   40 RetStat: RETURN Expr ';' .
+
+    $default  reduce using rule 40 (RetStat)
+
+
 State 138
-
-   41 RetStat: RETURN Expr ';' .
-
-    $default  reduce using rule 41 (RetStat)
-
-
-State 139
 
    13 FuncDec: Type ID '(' ')' '{' VarDecList StatList '}' .
 
     $default  reduce using rule 13 (FuncDec)
 
 
-State 140
+State 139
 
    11 FuncDec: Type ID '(' ParamList ')' '{' VarDecList StatList . '}'
 
-    '}'  shift, and go to state 151
+    '}'  shift, and go to state 150
 
 
-State 141
+State 140
 
    12 FuncDec: Type ID '(' ParamList ')' '{' StatList '}' .
 
     $default  reduce using rule 12 (FuncDec)
 
 
+State 141
+
+   77 ArgList: Expr ',' ArgList .
+
+    $default  reduce using rule 77 (ArgList)
+
+
 State 142
 
-   78 ArgList: Expr ',' ArgList .
+   72 Var: ID '[' Expr ']' '[' Expr ']' .
 
-    $default  reduce using rule 78 (ArgList)
+    $default  reduce using rule 72 (Var)
 
 
 State 143
 
-   73 Var: ID '[' Expr ']' '[' Expr ']' .
+   50 TerExpr: TerExpr '?' OrTerm ':' OrTerm .
+   52 OrTerm: OrTerm . OR AndTerm
 
-    $default  reduce using rule 73 (Var)
+    OR  shift, and go to state 68
+
+    $default  reduce using rule 50 (TerExpr)
 
 
 State 144
 
-   51 TerExpr: TerExpr '?' OrTerm ':' OrTerm .
-   53 OrTerm: OrTerm . OR AndTerm
+   43 CondStat: IF '(' Expr ')' . '{' StatList '}'
+   44         | IF '(' Expr ')' . '{' StatList '}' ELSE '{' StatList '}'
 
-    OR  shift, and go to state 68
-
-    $default  reduce using rule 51 (TerExpr)
+    '{'  shift, and go to state 151
 
 
 State 145
 
-   44 CondStat: IF '(' Expr ')' . '{' StatList '}'
-   45         | IF '(' Expr ')' . '{' StatList '}' ELSE '{' StatList '}'
-
-    '{'  shift, and go to state 152
-
-
-State 146
-
-   42 LoopStat: FOR '(' Expr ';' . Expr ';' Expr ')' '{' StatList '}'
+   41 LoopStat: FOR '(' Expr ';' . Expr ';' Expr ')' '{' StatList '}'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -2123,7 +2113,7 @@ State 146
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    Expr      go to state 153
+    Expr      go to state 152
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -2138,29 +2128,59 @@ State 146
     Constant  go to state 54
 
 
+State 146
+
+   42 LoopStat: WHILE '(' Expr ')' . '{' StatList '}'
+
+    '{'  shift, and go to state 153
+
+
 State 147
-
-   43 LoopStat: WHILE '(' Expr ')' . '{' StatList '}'
-
-    '{'  shift, and go to state 154
-
-
-State 148
 
    33 InpList: Var IN . InpList
 
     ID  shift, and go to state 28
 
-    InpList  go to state 155
-    Var      go to state 134
+    InpList  go to state 154
+    Var      go to state 133
 
 
-State 149
+State 148
 
    38 OutList: STRING OUT . OutList
 
     ID       shift, and go to state 33
-    STRING   shift, and go to state 135
+    STRING   shift, and go to state 134
+    NOT      shift, and go to state 34
+    TRUE     shift, and go to state 35
+    FALSE    shift, and go to state 36
+    SOP      shift, and go to state 37
+    NUMBER   shift, and go to state 38
+    FLT_NUM  shift, and go to state 39
+    '('      shift, and go to state 40
+
+    OutList   go to state 155
+    Expr      go to state 136
+    TerExpr   go to state 43
+    OrTerm    go to state 44
+    AndTerm   go to state 45
+    RelTerm   go to state 46
+    SumTerm   go to state 47
+    MulTerm   go to state 48
+    UnTerm    go to state 49
+    Term      go to state 50
+    Var       go to state 51
+    NonVar    go to state 52
+    FunCall   go to state 53
+    Constant  go to state 54
+
+
+State 149
+
+   36 OutList: Expr OUT . OutList
+
+    ID       shift, and go to state 33
+    STRING   shift, and go to state 134
     NOT      shift, and go to state 34
     TRUE     shift, and go to state 35
     FALSE    shift, and go to state 36
@@ -2170,7 +2190,7 @@ State 149
     '('      shift, and go to state 40
 
     OutList   go to state 156
-    Expr      go to state 137
+    Expr      go to state 136
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -2187,45 +2207,15 @@ State 149
 
 State 150
 
-   36 OutList: Expr OUT . OutList
-
-    ID       shift, and go to state 33
-    STRING   shift, and go to state 135
-    NOT      shift, and go to state 34
-    TRUE     shift, and go to state 35
-    FALSE    shift, and go to state 36
-    SOP      shift, and go to state 37
-    NUMBER   shift, and go to state 38
-    FLT_NUM  shift, and go to state 39
-    '('      shift, and go to state 40
-
-    OutList   go to state 157
-    Expr      go to state 137
-    TerExpr   go to state 43
-    OrTerm    go to state 44
-    AndTerm   go to state 45
-    RelTerm   go to state 46
-    SumTerm   go to state 47
-    MulTerm   go to state 48
-    UnTerm    go to state 49
-    Term      go to state 50
-    Var       go to state 51
-    NonVar    go to state 52
-    FunCall   go to state 53
-    Constant  go to state 54
-
-
-State 151
-
    11 FuncDec: Type ID '(' ParamList ')' '{' VarDecList StatList '}' .
 
     $default  reduce using rule 11 (FuncDec)
 
 
-State 152
+State 151
 
-   44 CondStat: IF '(' Expr ')' '{' . StatList '}'
-   45         | IF '(' Expr ')' '{' . StatList '}' ELSE '{' StatList '}'
+   43 CondStat: IF '(' Expr ')' '{' . StatList '}'
+   44         | IF '(' Expr ')' '{' . StatList '}' ELSE '{' StatList '}'
 
     ID       shift, and go to state 33
     IF       shift, and go to state 76
@@ -2242,7 +2232,7 @@ State 152
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    StatList   go to state 158
+    StatList   go to state 157
     Statement  go to state 84
     IOStat     go to state 85
     InpStat    go to state 86
@@ -2264,18 +2254,18 @@ State 152
     NonVar     go to state 52
     FunCall    go to state 53
     Constant   go to state 54
+
+
+State 152
+
+   41 LoopStat: FOR '(' Expr ';' Expr . ';' Expr ')' '{' StatList '}'
+
+    ';'  shift, and go to state 158
 
 
 State 153
 
-   42 LoopStat: FOR '(' Expr ';' Expr . ';' Expr ')' '{' StatList '}'
-
-    ';'  shift, and go to state 159
-
-
-State 154
-
-   43 LoopStat: WHILE '(' Expr ')' '{' . StatList '}'
+   42 LoopStat: WHILE '(' Expr ')' '{' . StatList '}'
 
     ID       shift, and go to state 33
     IF       shift, and go to state 76
@@ -2292,7 +2282,7 @@ State 154
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    StatList   go to state 160
+    StatList   go to state 159
     Statement  go to state 84
     IOStat     go to state 85
     InpStat    go to state 86
@@ -2316,38 +2306,38 @@ State 154
     Constant   go to state 54
 
 
-State 155
+State 154
 
    33 InpList: Var IN InpList .
 
     $default  reduce using rule 33 (InpList)
 
 
-State 156
+State 155
 
    38 OutList: STRING OUT OutList .
 
     $default  reduce using rule 38 (OutList)
 
 
-State 157
+State 156
 
    36 OutList: Expr OUT OutList .
 
     $default  reduce using rule 36 (OutList)
 
 
+State 157
+
+   43 CondStat: IF '(' Expr ')' '{' StatList . '}'
+   44         | IF '(' Expr ')' '{' StatList . '}' ELSE '{' StatList '}'
+
+    '}'  shift, and go to state 160
+
+
 State 158
 
-   44 CondStat: IF '(' Expr ')' '{' StatList . '}'
-   45         | IF '(' Expr ')' '{' StatList . '}' ELSE '{' StatList '}'
-
-    '}'  shift, and go to state 161
-
-
-State 159
-
-   42 LoopStat: FOR '(' Expr ';' Expr ';' . Expr ')' '{' StatList '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' . Expr ')' '{' StatList '}'
 
     ID       shift, and go to state 33
     NOT      shift, and go to state 34
@@ -2358,7 +2348,7 @@ State 159
     FLT_NUM  shift, and go to state 39
     '('      shift, and go to state 40
 
-    Expr      go to state 162
+    Expr      go to state 161
     TerExpr   go to state 43
     OrTerm    go to state 44
     AndTerm   go to state 45
@@ -2373,54 +2363,97 @@ State 159
     Constant  go to state 54
 
 
+State 159
+
+   42 LoopStat: WHILE '(' Expr ')' '{' StatList . '}'
+
+    '}'  shift, and go to state 162
+
+
 State 160
 
-   43 LoopStat: WHILE '(' Expr ')' '{' StatList . '}'
+   43 CondStat: IF '(' Expr ')' '{' StatList '}' .
+   44         | IF '(' Expr ')' '{' StatList '}' . ELSE '{' StatList '}'
 
-    '}'  shift, and go to state 163
+    ELSE  shift, and go to state 163
+
+    $default  reduce using rule 43 (CondStat)
 
 
 State 161
 
-   44 CondStat: IF '(' Expr ')' '{' StatList '}' .
-   45         | IF '(' Expr ')' '{' StatList '}' . ELSE '{' StatList '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr . ')' '{' StatList '}'
 
-    ELSE  shift, and go to state 164
-
-    $default  reduce using rule 44 (CondStat)
+    ')'  shift, and go to state 164
 
 
 State 162
 
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr . ')' '{' StatList '}'
+   42 LoopStat: WHILE '(' Expr ')' '{' StatList '}' .
 
-    ')'  shift, and go to state 165
+    $default  reduce using rule 42 (LoopStat)
 
 
 State 163
 
-   43 LoopStat: WHILE '(' Expr ')' '{' StatList '}' .
+   44 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE . '{' StatList '}'
 
-    $default  reduce using rule 43 (LoopStat)
+    '{'  shift, and go to state 165
 
 
 State 164
 
-   45 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE . '{' StatList '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' . '{' StatList '}'
 
     '{'  shift, and go to state 166
 
 
 State 165
 
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' . '{' StatList '}'
+   44 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' . StatList '}'
 
-    '{'  shift, and go to state 167
+    ID       shift, and go to state 33
+    IF       shift, and go to state 76
+    FOR      shift, and go to state 77
+    WHILE    shift, and go to state 78
+    INPUT    shift, and go to state 79
+    PRINT    shift, and go to state 80
+    NOT      shift, and go to state 34
+    TRUE     shift, and go to state 35
+    FALSE    shift, and go to state 36
+    RETURN   shift, and go to state 81
+    SOP      shift, and go to state 37
+    NUMBER   shift, and go to state 38
+    FLT_NUM  shift, and go to state 39
+    '('      shift, and go to state 40
+
+    StatList   go to state 167
+    Statement  go to state 84
+    IOStat     go to state 85
+    InpStat    go to state 86
+    OutStat    go to state 87
+    RetStat    go to state 88
+    LoopStat   go to state 89
+    CondStat   go to state 90
+    ExprStat   go to state 91
+    Expr       go to state 92
+    TerExpr    go to state 43
+    OrTerm     go to state 44
+    AndTerm    go to state 45
+    RelTerm    go to state 46
+    SumTerm    go to state 47
+    MulTerm    go to state 48
+    UnTerm     go to state 49
+    Term       go to state 50
+    Var        go to state 51
+    NonVar     go to state 52
+    FunCall    go to state 53
+    Constant   go to state 54
 
 
 State 166
 
-   45 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' . StatList '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' . StatList '}'
 
     ID       shift, and go to state 33
     IF       shift, and go to state 76
@@ -2463,70 +2496,27 @@ State 166
 
 State 167
 
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' . StatList '}'
+   44 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList . '}'
 
-    ID       shift, and go to state 33
-    IF       shift, and go to state 76
-    FOR      shift, and go to state 77
-    WHILE    shift, and go to state 78
-    INPUT    shift, and go to state 79
-    PRINT    shift, and go to state 80
-    NOT      shift, and go to state 34
-    TRUE     shift, and go to state 35
-    FALSE    shift, and go to state 36
-    RETURN   shift, and go to state 81
-    SOP      shift, and go to state 37
-    NUMBER   shift, and go to state 38
-    FLT_NUM  shift, and go to state 39
-    '('      shift, and go to state 40
-
-    StatList   go to state 169
-    Statement  go to state 84
-    IOStat     go to state 85
-    InpStat    go to state 86
-    OutStat    go to state 87
-    RetStat    go to state 88
-    LoopStat   go to state 89
-    CondStat   go to state 90
-    ExprStat   go to state 91
-    Expr       go to state 92
-    TerExpr    go to state 43
-    OrTerm     go to state 44
-    AndTerm    go to state 45
-    RelTerm    go to state 46
-    SumTerm    go to state 47
-    MulTerm    go to state 48
-    UnTerm     go to state 49
-    Term       go to state 50
-    Var        go to state 51
-    NonVar     go to state 52
-    FunCall    go to state 53
-    Constant   go to state 54
+    '}'  shift, and go to state 169
 
 
 State 168
 
-   45 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList . '}'
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList . '}'
 
     '}'  shift, and go to state 170
 
 
 State 169
 
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList . '}'
+   44 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}' .
 
-    '}'  shift, and go to state 171
+    $default  reduce using rule 44 (CondStat)
 
 
 State 170
 
-   45 CondStat: IF '(' Expr ')' '{' StatList '}' ELSE '{' StatList '}' .
+   41 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList '}' .
 
-    $default  reduce using rule 45 (CondStat)
-
-
-State 171
-
-   42 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{' StatList '}' .
-
-    $default  reduce using rule 42 (LoopStat)
+    $default  reduce using rule 41 (LoopStat)

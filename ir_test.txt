@@ -1,5 +1,12 @@
-float main(float c){
+int global;;
+
+float main(float c, int z[20]){
 	int a, b, i, d[10];
+	char k, g[14];
+	bool check;
+	check = True;
+	g = "Hello";
+	d[1] = d[2] + d[3];
 	if(a>c){
 		a += 1;
 		a = c;
@@ -9,12 +16,32 @@ float main(float c){
 		b += 1;
 	}
 	c = a+b;
+	a = (c>b)?12:10;
 	for(i=0; i < 10; i+=1){
-		a += 1;
+		d[i] += 1;
 	}
 	c = a+1;
 	while(c < 100){
 		c+=1;
+		z[12] += 1;
 	}
 	return c;
+}
+
+int name(){
+	int d, e;
+	d = 1;
+	e = -(1) + (-10);
+
+	return d;
+}
+
+int fname(int z){
+	float foo;
+	int q;
+	foo = 12;
+	main((foo+q)/2);
+	global = 12 + global;
+	z = 2;
+	return 10;
 }

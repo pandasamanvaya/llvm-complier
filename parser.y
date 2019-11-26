@@ -28,7 +28,7 @@
 %type <node> Param FuncDec VarDecList IOStat ArgList RetStat FuncDecList DecList
 %%
 
-Goal: DecList                              {printf("AST Generated code:-\n");printAST($1);interpreter($1);};
+Goal: DecList                              {printf("AST Generated code:-\n");printAST($1);printIR($1);};
 DecList: VarDecList ';' FuncDecList        {$$ = getASTNodeDecList($1, $3);}
   | FuncDecList                            {$$ = getASTNodeDecList(NULL, $1);}   
   ;
@@ -88,8 +88,7 @@ OutList: Expr OUT OutList                   {$$ = getASTNodeOutputList($1, new s
   | STRING                                  {$$ = getASTNodeOutputList(NULL, $1, NULL);}      
   ;
 //Return
-RetStat: RETURN ';'                         {$$ = getASTNodeReturn(NULL);}
-  | RETURN Expr ';'                         {$$ = getASTNodeReturn($2);}
+RetStat: RETURN Expr ';'                         {$$ = getASTNodeReturn($2);}
   ;
 //Loops
 LoopStat: FOR '(' Expr ';' Expr ';' Expr ')' '{'StatList'}'     {$$ = getASTNodeFor($3, $5, $7, $10);}

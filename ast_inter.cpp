@@ -143,6 +143,12 @@ int evalStat(struct ASTNode *Node)
 				}
 			}
 				break;
+		case TernaryOp:{
+				if(evalStat(Node->ternarynode.first))
+					return evalStat(Node->ternarynode.second);
+				else
+					return evalStat(Node->ternarynode.third);
+			}
 		case INTLIT: return Node->litval;
 		case FLT_LIT: return Node->litval;
 		case IDLIT: return idLitVal(Node);

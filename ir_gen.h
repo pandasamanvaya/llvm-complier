@@ -20,7 +20,7 @@ static Module *ModuleOb = new Module("IR Generator", Context);
 
 extern void genIRCode(struct ASTNode *Node, int i);
 void genIRBinOp(struct ASTNode *Node);
-void setFuncArgs(Function *func, vector<string> args);
+vector<pair<Value *, string>> setFuncArgs(Function *func, vector<string> args);
 struct IRFunction *genIRFunction(struct ASTNode *Node);
 plist genIRParamList(plist parameterlist, struct ASTNode *Node);
 pair<Type *, pair<string, Value *>> genIRParam(struct ASTNode *Node);
@@ -38,10 +38,14 @@ Value *getAddress(struct ASTNode *Node, struct IRFunction *Func);
 Value *getArrayVal(struct ASTNode *Node, struct IRFunction *Func);
 Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func);
 BasicBlock *createBB(Function *func, string name);
+Function *findFunc(string name);
+vector <Value *> genFuncArgs(vector<Value *>args, struct ASTNode *Node, IRFunction *Func);
+Constant *genString(string s);
+vector<Value *> genPrintList(vector<Value *> args, struct ASTNode *Node, IRFunction *Func);
 
 struct IRFunction{
 	Function *func;
 	BasicBlock *bb;
 	alist alloc;
-	vector<string> args;
+	vector<pair<Value *, string>> args;
 };

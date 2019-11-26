@@ -1,10 +1,8 @@
 #include <string>
-// #include "ir_gen.h"
-// #include "ast_inter.h"
 using namespace std;
 
-// extern void printIR(struct ASTNode *node);
-extern void interpreter(struct ASTNode *node);
+extern void printIR(struct ASTNode *node);
+// extern void interpreter(struct ASTNode *node);
 typedef enum  astnodetype {BinaryOp, UnaryOp, TernaryOp, StringOp, 
 							Array1D, Array2D, Func, FuncList, INTLIT, 
 							BOOLLIT, IDLIT, FLT_LIT, While, For, If,  

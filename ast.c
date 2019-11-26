@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include "ast.h"
-// #include "ir_gen.h"
-#include "ast_inter.h"
+#include "ir_gen.h"
+// #include "ast_inter.h"
 
 struct ASTNode *getASTNodeBinaryOp(struct ASTNode *left, 
 									struct ASTNode *right, 
@@ -389,16 +388,16 @@ struct ASTNode *getASTNodeIDLiteral(string *litval)
 	return node;
 }
 
-// void printIR(struct ASTNode *node)
-// {
-// 	printf("------------------------\n");
-// 	printf("LLVM IR Code generated :-\n");
-// 	printf("------------------------\n");
-// 	genIRCode(node, 0);
-
-// }
-
-void interpreter(struct ASTNode *node)
+void printIR(struct ASTNode *node)
 {
-	interpret(node);
+	printf("------------------------\n");
+	printf("LLVM IR Code generated :-\n");
+	printf("------------------------\n");
+	genIRCode(node, 0);
+
 }
+
+// void interpreter(struct ASTNode *node)
+// {
+// 	interpret(node);
+// }

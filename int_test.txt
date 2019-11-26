@@ -21,8 +21,10 @@ int main(){
 
 int next()
 {
-	int c, d;
-	return c;
+	int c, d, g;
+	d = (c==d)?12:10;
+	print << d;
+	return d;
 }
 
 int new()
