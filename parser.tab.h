@@ -74,7 +74,8 @@ extern int yydebug;
     SOP = 284,
     MOP = 285,
     NUMBER = 286,
-    FLT_NUM = 287
+    FLT_NUM = 287,
+    LETTER = 288
   };
 #endif
 
@@ -89,8 +90,9 @@ union YYSTYPE
   string *text;
   int number;
   float flt;
+  char letter;
 
-#line 94 "parser.tab.h" /* yacc.c:1909  */
+#line 96 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -1,0 +1,19 @@
+int gcd(int x, int y)
+{
+	if(x > y){
+		return gcd(y, x);
+	}
+	if(x == y or x == 0){
+		return y;
+	}
+	return gcd(x, y%x);
+}
+
+int main()
+{
+	int i, j;
+	i = 12;
+	j = 4;
+	print << "Gcd of " << i << ", " << j << " = " << gcd(i, j) << "\n";
+	return 0;
+}

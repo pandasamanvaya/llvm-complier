@@ -9,11 +9,11 @@ vector<string> funcname;
 // }
 Value *arithOp(Value *left, Value *right, string op)
 {
-	if(op == "+" || op == "+=")		return Builder.CreateNSWAdd(left, right, "sum");
+	if(op == "+" || op == "+=")		return Builder.CreateAdd(left, right, "sum");
 	else if (op == "-" || op == "-=") return Builder.CreateNSWSub(left, right, "diff");
 	else if (op == "*" || op == "*=") return Builder.CreateNSWMul(left, right, "mul");
 	else if (op == "/" || op == "/=") return Builder.CreateSDiv(left, right, "div");
-	else if (op == "%" || op == "%=") return Builder.CreateSRem(left, right, "rem");
+	else if (op == "%" || op == "%=") return Builder.CreateURem(left, right, "rem");
 	return null;
 }
 
@@ -78,12 +78,12 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 				case ANDOP:{
 						Value *left = genIRStat(Node->binarynode.left, Func);
 						Value *right = genIRStat(Node->binarynode.right, Func);
-						return Builder.CreateAnd(left, right);
+						return Builder.CreateAnd(left, right, "and");
 					}
 				case OROP:{
 						Value *left = genIRStat(Node->binarynode.left, Func);
 						Value *right = genIRStat(Node->binarynode.right, Func);
-						return Builder.CreateOr(left, right);
+						return Builder.CreateOr(left, right, "or");
 					}
 				case RELOP:{
 						Value *left = genIRStat(Node->binarynode.left, Func);
@@ -103,7 +103,7 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 		case UnaryOp:{
 						if(Node->unarynode.optype == NOTOP){
 							Value *operand = genIRStat(Node->unarynode.operand, Func);
-							return Builder.CreateNot(operand);
+							return Builder.CreateNot(operand, "not");
 						}
 						else{
 							if(Node->unarynode.op == "-"){
@@ -143,13 +143,16 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 		case Return : return Builder.CreateRet(genIRStat(Node->returnstat.expr, Func));
 		case StringOp: {
 				Value *leftop = getAddress(Node->stringnode.operand, Func);
- 				return Builder.CreateStore(genString(Node->stringnode.str), leftop);
+ 				Builder.CreateStore(genString(Node->stringnode.str), leftop);
+ 				AllocaInst *str = new AllocaInst(Builder.getInt8PtrTy(), 0, "str", Func->bb);
+ 				BitCastInst *bit = new BitCastInst(leftop, Builder.getInt8PtrTy());
+ 				return Builder.CreateStore(bit, str);
 			}
 		case FunCall:{
 					Function *call = findFunc(Node->funcall.name);
 					vector<Value*>args;
 					args = genFuncArgs(args, Node->funcall.arglist, Func);
-					return Builder.CreateCall(call, makeArrayRef(args));
+					return Builder.CreateCall(call, makeArrayRef(args), "call");
 			}
 		case If:{
 				Value *cond = genIRStat(Node->ifnode.condition, Func);
@@ -180,24 +183,25 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 		case For:{
 				BasicBlock *For = createBB(Func->func, "for");
 				Value *start = genIRStat(Node->fornode.init, Func);
-				Builder.CreateBr(For);
-				Builder.SetInsertPoint(For);
 				Value *cond = genIRStat(Node->fornode.condition, Func);
-				Value *stat = genIRStatlist(Node->fornode.statlist, Func);
-				Value *update = genIRStat(Node->fornode.update, Func);
 				BasicBlock *After = createBB(Func->func, "afterfor");
 				Builder.CreateCondBr(cond, For, After);
+				Builder.SetInsertPoint(For);
+				Value *stat = genIRStatlist(Node->fornode.statlist, Func);
+				Value *update = genIRStat(Node->fornode.update, Func);
+				cond = genIRStat(Node->fornode.condition, Func);
+				Builder.CreateCondBr(cond, For, After);
 				Builder.SetInsertPoint(After);
-
 				return null;
 			}
 		case While:{
 				BasicBlock *While = createBB(Func->func, "while");
-				Builder.CreateBr(While);
-				Builder.SetInsertPoint(While);
-				Value *cond = genIRStat(Node->whilenode.condition, Func);
-				Value *stat = genIRStatlist(Node->whilenode.statlist, Func);
 				BasicBlock *After = createBB(Func->func, "afterwhile");
+				Value *cond = genIRStat(Node->whilenode.condition, Func);
+				Builder.CreateCondBr(cond, While, After);
+				Builder.SetInsertPoint(While);
+				Value *stat = genIRStatlist(Node->whilenode.statlist, Func);
+				cond = genIRStat(Node->whilenode.condition, Func);
 				Builder.CreateCondBr(cond, While, After);
 				Builder.SetInsertPoint(After);
 
@@ -205,38 +209,84 @@ Value *genIRStat(struct ASTNode *Node, struct IRFunction *Func)
 			}
 		case Output:{
 				vector<Value *> args;
-				args = genPrintList(args, Node->outputstat.list, Func);
-				FunctionType *type = FunctionType::get(Builder.getInt32Ty(), 
-										PointerType::get(Builder.getInt8Ty(), 0));
-				Function *print = cast<Function>(ModuleOb->getOrInsertFunction("printf", type, true));
-				return Builder.CreateCall(print, args);
+				vector<pair<string, Value *>>arg;
+				arg = genPrintList(arg, Node->outputstat.list, Func);
+				string str = "";
+				for(uint i=0; i < arg.size(); i++){
+					str += arg[i].first;
+					args.push_back(arg[i].second);
+				}
+				Value *spec = Builder.CreateGlobalStringPtr(str);
+				args.insert(args.begin(), spec);
+
+				// args.push_back(arg[0]);
+				Function *print = ModuleOb->getFunction("printf");
+				if (!print) {
+			        PointerType *Pty = PointerType::get(Builder.getInt8Ty(), 0);
+			        FunctionType *FuncTy9 = FunctionType::get(Builder.getInt32Ty(), Pty, true);
+
+			        print = Function::Create(FuncTy9, GlobalValue::ExternalLinkage, "printf", ModuleOb);
+			        print->setCallingConv(CallingConv::C);
+			    }
+				return Builder.CreateCall(print, args, "print");
 			}
+		
 		default: break;
 
 	}
 	return null;
 }
 
-vector<Value *> genPrintList(vector<Value *> args, struct ASTNode *Node, IRFunction *Func)
+PointerType *getPtr(Value *val)
 {
-	if(Node->outputlist.left != NULL)
-		args.push_back(genOperand(Node->outputlist.left, Func));
+	if(val->getType() == Builder.getInt32Ty())
+		return PointerType::get(Builder.getInt32Ty(), 0);
+	else
+		return Builder.getInt8PtrTy();
+}
+
+vector<pair<string, Value *>> genInputList(vector<pair<string, Value *>> args, struct ASTNode *Node, IRFunction *Func)
+{
+	if(Node->inputlist.left != NULL){
+		Value *val = genIRStat(Node->inputlist.left, Func);
+		string type = typeToString(val->getType());
+		args.push_back(make_pair(type, val));
+	}
+	if(Node->inputlist.right != NULL)
+		args = genInputList(args, Node->inputlist.right, Func);
+	return args;
+}
+
+vector<pair<string, Value *>> genPrintList(vector<pair<string, Value *>> args, struct ASTNode *Node, IRFunction *Func)
+{
+	if(Node->outputlist.left != NULL){
+		Value *val = genIRStat(Node->outputlist.left, Func);
+		string type = typeToString(val->getType());
+		args.push_back(make_pair(type, val));
+	}
 	if(Node->outputlist.str != "NULL")
-		args.push_back(genString(Node->outputlist.str));
+		args.push_back(make_pair("%s", genString(Node->outputlist.str)));
+	
 	if(Node->outputlist.right != NULL)
 		args = genPrintList(args, Node->outputlist.right, Func);
 	return args;
 }
-
-Constant *genString(string s)
+string typeToString(Type *type)
 {
-	vector<Constant *> str;
-	Type *type = Builder.getInt8Ty();
-	for(uint i=0; i < s.size(); i++)
-		str.push_back(ConstantInt::get(type, s[i]));
-	str.push_back(ConstantInt::get(type, 0));
-	ArrayType *str_type = ArrayType::get(type, str.size());
-	return ConstantArray::get(str_type, str);
+	if(type == Builder.getFloatTy())
+		return "%f";
+	if(type == Builder.getInt8Ty())
+		return "%s";
+	else return "%d";
+}
+
+Value *genString(string s)
+{
+	if(s == "\\n")
+		s = "\n";
+	else if(s == "\\t")
+		s = "\t";
+	return Builder.CreateGlobalStringPtr(s);
 }
 vector <Value *> genFuncArgs(vector<Value *>args, struct ASTNode *Node, IRFunction *Func)
 {
@@ -321,7 +371,7 @@ Value *genOperand(struct ASTNode *Node, struct IRFunction *Func)
 {
 	switch(Node->nodetype){
 		case INTLIT: return Builder.getInt32(Node->litval);
-		case FLT_LIT: return ConstantFP::get(Builder.getFloatTy(), Node->flt_litval);
+		case FLT_LIT: {cout << Node->flt_litval;return ConstantFP::get(Builder.getFloatTy(), Node->flt_litval);}
 		case IDLIT: {
 					Value *val = getIdVal(Node->idlit, Func);
 					if(val == null){
@@ -581,8 +631,10 @@ void genIRCode(struct ASTNode *Node, int i)
 				break;
 		default: break;
 	}
-	if(i==0)
+	if(i==0){
 		ModuleOb->print(errs(), nullptr);
+		// ModuleOb->dump();
+	}
 }
 
 

@@ -16,12 +16,14 @@
   string *text;
   int number;
   float flt;
+  char letter;
 }
 
 %token <text> ID INT CHAR BOOL VOID IF ELSE FOR WHILE INPUT PRINT ROP STRING FLOAT
 %token <text> RDOP AOP AND OR NOT TRUE FALSE EQUAL BREAK RETURN IN OUT SOP MOP
 %token <number> NUMBER
 %token <flt> FLT_NUM
+%token <letter> LETTER
 %type <node> Expr Var OrTerm AndTerm MulTerm SumTerm TerExpr Constant FunCall
 %type <node> Term RelTerm UnTerm NonVar Type ExprStat LoopStat CondStat InpList
 %type <node> InpStat OutList OutStat VarList VarDec StatList Statement ParamList 

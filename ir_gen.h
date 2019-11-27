@@ -5,6 +5,10 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/Bitcode/BitcodeWriter.h"
+#include <fcntl.h>
+#include <unistd.h>
 #include <vector>
 #include "ast.h"
 #define plist vector<pair<Type *, pair<string, Value *>>>
@@ -40,8 +44,11 @@ Value *getArrayAddress(struct ASTNode *Node, struct IRFunction *Func);
 BasicBlock *createBB(Function *func, string name);
 Function *findFunc(string name);
 vector <Value *> genFuncArgs(vector<Value *>args, struct ASTNode *Node, IRFunction *Func);
-Constant *genString(string s);
-vector<Value *> genPrintList(vector<Value *> args, struct ASTNode *Node, IRFunction *Func);
+Value *genString(string s);
+vector<pair<string, Value *>> genPrintList(vector<pair<string, Value *>> args, struct ASTNode *Node, IRFunction *Func);
+string typeToString(Type *type);
+PointerType *getPtr(Value *val);
+vector<pair<string, Value *>> genInputList(vector<pair<string, Value *>> args, struct ASTNode *Node, IRFunction *Func);
 
 struct IRFunction{
 	Function *func;

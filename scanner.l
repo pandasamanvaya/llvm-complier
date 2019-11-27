@@ -14,7 +14,9 @@ extern "C" int yylex();
 [)]					{return ')';}
 [\]]				{return ']';}
 [\[]				{return '[';}
-["'][^"']+["'] 		{yylval.text = new string(strdup(yytext));return STRING;}
+['][^"'][']			{string str = strdup(yytext); yylval.letter = str[1]; return LETTER;}
+["'][^"']+["'] 		{string str = strdup(yytext); str.erase(str.begin()); str.erase(str.end()-1); 
+					yylval.text = new string(str);return STRING;}
 int					{yylval.text = new string("int"); return INT;}
 char				{yylval.text = new string("char"); return CHAR;}
 bool				{yylval.text = new string("bool"); return BOOL;}
