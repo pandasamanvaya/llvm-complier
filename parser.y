@@ -30,7 +30,7 @@
 %type <node> Param FuncDec VarDecList IOStat ArgList RetStat FuncDecList DecList
 %%
 
-Goal: DecList                              {printf("AST Generated code:-\n");printAST($1);printIR($1);};
+Goal: DecList                              {printIR($1);};
 DecList: VarDecList ';' FuncDecList        {$$ = getASTNodeDecList($1, $3);}
   | FuncDecList                            {$$ = getASTNodeDecList(NULL, $1);}   
   ;

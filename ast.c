@@ -390,9 +390,6 @@ struct ASTNode *getASTNodeIDLiteral(string *litval)
 
 void printIR(struct ASTNode *node)
 {
-	printf("------------------------\n");
-	printf("LLVM IR Code generated :-\n");
-	printf("------------------------\n");
 	genIRCode(node, 0);
 
 }

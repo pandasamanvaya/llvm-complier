@@ -1,0 +1,14 @@
+int print_arr(int a[10])
+{
+	a[0] = 1;
+	return a[0];
+}
+
+int main()
+{
+	int i, j, a[10];
+	i = 12;
+	j = print_arr(a);
+	print <<  j << "\n";
+	return 0;
+}

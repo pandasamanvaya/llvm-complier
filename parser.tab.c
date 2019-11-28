@@ -1381,7 +1381,7 @@ yyreduce:
     {
         case 2:
 #line 33 "parser.y" /* yacc.c:1646  */
-    {printf("AST Generated code:-\n");printAST((yyvsp[0].node));printIR((yyvsp[0].node));}
+    {printIR((yyvsp[0].node));}
 #line 1386 "parser.tab.c" /* yacc.c:1646  */
     break;
 
