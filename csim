@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ "$#" -gt 1 ]; then
+	echo "Cannot compile more than one program"
+elif [ "$#" -ne 1 ]; then
+	echo "No program to compile"
+else
+	./parser < $1 &> temp.ll
+	clang -fsanitize=safe-stack -o a.out temp.ll
+	./a.out
+	rm temp.ll a.out
+fi

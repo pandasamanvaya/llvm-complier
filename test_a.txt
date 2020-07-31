@@ -15,7 +15,7 @@ int main(){
 	while(b < 100){
 		b += 1;
 	}
-	print << b << (a+b)/2;
+	print << b << (a+b)/2 << "\n";
 	return b;
 }
 
